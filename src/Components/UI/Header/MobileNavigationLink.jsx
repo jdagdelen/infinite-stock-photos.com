@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 
 const MobileNavigationLink = ({ path, title }) => {
-  console.log('MobileNavigationLink', path, title);
   return (
     <ListItem disablePadding>
       <NavLink

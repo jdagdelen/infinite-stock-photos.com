@@ -9,7 +9,7 @@ import SignIn from './Pages/SignIn';
 function App() {
   return (
     <BrowserRouter>
-      <div style={{ overflowX: 'hidden' }}>
+      <div style={{ overflow: 'hidden' }}>
         <CssBaseline />
         <Header />
         <Routes>

@@ -41,7 +41,11 @@ const Feed = () => {
         else return <FeedGrid key={i} images={images} />;
       })}
       {isLoading && (
-        <Stack direction='column' alignItems='center' sx={{ marginTop: '1em' }}>
+        <Stack
+          direction='column'
+          alignItems='center'
+          sx={{ margin: '1em 0', overflow: 'hidden' }}
+        >
           <CircularProgress />
         </Stack>
       )}

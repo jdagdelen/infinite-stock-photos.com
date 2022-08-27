@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Grid, Box, Typography, Stack, IconButton } from '@mui/material';
-import { FavoriteBorder, Send, StarBorder } from '@mui/icons-material';
+import { FavoriteBorder, StarBorder } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import PlaceHolderImage from '../../../assets/product-image-placeholder.svg';
+import SocialShare from './SocialShare';
 
-const ImageComponent = ({ image, description }) => {
+const ImageComponent = ({ image, description, forwardedRef }) => {
   const [showInfo, setShowInfo] = useState(false);
   const info = {
     initial: {
@@ -21,12 +22,17 @@ const ImageComponent = ({ image, description }) => {
 
   return (
     <Grid
+      ref={forwardedRef}
       item
-      sx={{ position: 'relative' }}
+      sx={{
+        position: 'relative',
+        flex: { xs: '100%', md: '50%', lg: '25%', xl: '20%' },
+        maxWidth: { sm: '100%', md: '50%', lg: '25%', xl: '20%' },
+        maxHeight: { sm: '100%', md: '50%', lg: '25%', xl: '20%' },
+      }}
       onMouseOver={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
     >
-      <img src={image ?? PlaceHolderImage} alt='Place Holder' />
       <AnimatePresence>
         {showInfo && (
           <motion.div
@@ -35,37 +41,35 @@ const ImageComponent = ({ image, description }) => {
             initial='initial'
             animate='animate'
             exit='exit'
+            style={{
+              backgroundColor: 'rgba(0,0,0,0.4)',
+              padding: '0.4em',
+              position: 'absolute',
+              top: 'auto',
+              bottom: 0,
+              width: '100%',
+              color: 'white',
+            }}
           >
-            <Box
-              sx={{
-                backgroundColor: 'rgba(0,0,0,0.4)',
-                padding: '0.4em',
-                position: 'absolute',
-                top: 'auto',
-                bottom: '8px',
-                width: '100%',
-                color: 'white',
-              }}
-            >
+            <Box>
               {description && <Typography>{description}</Typography>}
 
               <Stack direction='row' justifyContent='space-between'>
+                <SocialShare />
                 <Stack direction='row'>
-                  <IconButton>
-                    <Send htmlColor='white' />
-                  </IconButton>
                   <IconButton>
                     <FavoriteBorder htmlColor='white' />
                   </IconButton>
+                  <IconButton>
+                    <StarBorder htmlColor='white' />
+                  </IconButton>
                 </Stack>
-                <IconButton>
-                  <StarBorder htmlColor='white' />
-                </IconButton>
               </Stack>
             </Box>
           </motion.div>
         )}
       </AnimatePresence>
+      <img src={image ?? PlaceHolderImage} alt={image} width='100%' />
     </Grid>
   );
 };

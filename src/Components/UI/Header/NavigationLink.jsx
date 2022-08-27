@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const NavigationLink = ({ path, title }) => {
-  console.log('NavigationLink', path, title);
   return (
     <NavLink
       to={path}
