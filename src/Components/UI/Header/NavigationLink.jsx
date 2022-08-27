@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-const NavigationLink = ({ children, path }) => {
+const NavigationLink = ({ path, title }) => {
   return (
     <NavLink
       to={path}
@@ -13,7 +13,7 @@ const NavigationLink = ({ children, path }) => {
         padding: '0.5em 1em',
       })}
     >
-      {children}
+      {title}
     </NavLink>
   );
 };

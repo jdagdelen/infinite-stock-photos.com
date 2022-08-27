@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 
-const MobileNavigationLink = ({ children, path }) => {
+const MobileNavigationLink = ({ path, title }) => {
   return (
     <ListItem disablePadding>
       <NavLink
@@ -16,7 +16,7 @@ const MobileNavigationLink = ({ children, path }) => {
         })}
       >
         <ListItemButton sx={{ textAlign: 'center' }}>
-          <ListItemText primary={children} />
+          <ListItemText primary={title} />
         </ListItemButton>
       </NavLink>
     </ListItem>

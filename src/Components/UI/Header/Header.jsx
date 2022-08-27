@@ -39,9 +39,7 @@ const Header = (props) => {
       <Divider />
       <List>
         {links.map(({ title, path }, i) => (
-          <MobileNavigationLink key={i} path={path}>
-            {title}
-          </MobileNavigationLink>
+          <MobileNavigationLink key={i} path={path} title={title} />
         ))}
       </List>
     </Box>
@@ -76,9 +74,7 @@ const Header = (props) => {
         </Typography>
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           {links.map(({ title, path }, i) => (
-            <NavigationLink key={i} path={path}>
-              {title}
-            </NavigationLink>
+            <NavigationLink key={i} path={path} title={title} />
           ))}
         </Box>
       </Toolbar>
