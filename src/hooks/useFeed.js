@@ -9,7 +9,7 @@ export default function useFeed(query, pageNo) {
     setIsLoading(true);
     axios({
       method: 'GET',
-      url: 'https://api.infinitestockphotos.com/search',
+      url: `${process.env.REACT_APP_API_URL}/search`,
       params: { prompt: query },
     })
       .then((res) => {

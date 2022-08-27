@@ -7,18 +7,21 @@ import {
   Drawer,
   IconButton,
   List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   Toolbar,
   Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { NavLink } from 'react-router-dom';
+import NavigationLink from './NavigationLink';
+import MobileNavigationLink from './MobileNavigationLink';
 
 const drawerWidth = 240;
 
 const Header = (props) => {
+  const links = [
+    { title: 'Feed', path: '/' },
+    { title: 'Sign Up', path: '/sign-up' },
+    { title: 'Search', path: '/search' },
+  ];
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const container =
@@ -35,13 +38,11 @@ const Header = (props) => {
       </Typography>
       <Divider />
       <List>
-        <NavLink to='/'>
-          <ListItem disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary='Feed' />
-            </ListItemButton>
-          </ListItem>
-        </NavLink>
+        {links.map(({ title, path }, i) => (
+          <MobileNavigationLink key={i} path={path}>
+            {title}
+          </MobileNavigationLink>
+        ))}
       </List>
     </Box>
   );
@@ -74,30 +75,11 @@ const Header = (props) => {
           InfiniteStockPhotos.com
         </Typography>
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-          <NavLink
-            to='/'
-            style={({ isActive }) => ({
-              borderBottom: isActive ? '1px solid white' : 'none',
-              color: '#fff',
-              fontSize: '1rem',
-              textDecoration: 'none',
-              padding: '0.5em 1em',
-            })}
-          >
-            Feed
-          </NavLink>
-          <NavLink
-            to='/sign-in'
-            style={({ isActive }) => ({
-              borderBottom: isActive ? '1px solid white' : 'none',
-              color: '#fff',
-              fontSize: '1rem',
-              textDecoration: 'none',
-              padding: '0.5em 1em',
-            })}
-          >
-            Sign in
-          </NavLink>
+          {links.map(({ title, path }, i) => (
+            <NavigationLink key={i} path={path}>
+              {title}
+            </NavigationLink>
+          ))}
         </Box>
       </Toolbar>
       <Drawer

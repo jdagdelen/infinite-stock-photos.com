@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { CircularProgress, Stack } from '@mui/material';
 
-import FeedGrid from '../Components/UI/FeedGrid';
+import FeedGrid from '../Components/UI/FeedGrid/FeedGrid';
 import useFeed from '../hooks/useFeed';
 
 const Feed = () => {

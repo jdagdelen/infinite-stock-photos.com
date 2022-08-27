@@ -1,8 +1,7 @@
 import React from 'react';
 import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
 import { Replay } from '@mui/icons-material';
-
-import PlaceHolderImage from './../../assets/product-image-placeholder.svg';
+import ImageComponent from '../ImageComponent/ImageComponent';
 
 const FeedGrid = ({ images, forwardedRef }) => {
   return (
@@ -70,12 +69,11 @@ const FeedGrid = ({ images, forwardedRef }) => {
         <Grid item sm={12} md={9}>
           <Grid container direction='row'>
             {images.map((image, i) => (
-              <Grid item key={i}>
-                <img
-                  src={image.fields.image_file_name ?? PlaceHolderImage}
-                  alt='Place Holder'
-                />
-              </Grid>
+              <ImageComponent
+                key={i}
+                image={image.fields.image_file_name}
+                description='Test Test Test Test Test Test '
+              />
             ))}
           </Grid>
         </Grid>
