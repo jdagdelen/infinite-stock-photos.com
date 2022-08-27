@@ -1,48 +1,50 @@
-import React from 'react';
-import { Button, Container, Grid, TextField } from '@mui/material';
-import { Search } from '@mui/icons-material';
-import FeedGrid from '../Components/UI/FeedGrid/FeedGrid';
+import { useRef, useState, useEffect } from 'react';
+import { CircularProgress, Stack } from '@mui/material';
+
+import FeedGrid from '../Components/UI/FeedGrid';
+import useFeed from '../hooks/useFeed';
 
 const Feed = () => {
+  const [pageNo, setPageNo] = useState(1);
+  const { isLoading, imagesData } = useFeed('test', pageNo);
+  const [lastElement, setLastElement] = useState(null);
+  const observer = useRef(
+    new IntersectionObserver((entries) => {
+      const first = entries[0];
+      if (first.isIntersecting) {
+        setPageNo((no) => no + 1);
+      }
+    })
+  );
+  useEffect(() => {
+    const currentElement = lastElement;
+    const currentObserver = observer.current;
+
+    if (currentElement) {
+      currentObserver.observe(currentElement);
+    }
+
+    return () => {
+      if (currentElement) {
+        currentObserver.unobserve(currentElement);
+      }
+    };
+  }, [lastElement]);
+
   return (
     <>
-      <Container maxWidth='xl' sx={{ padding: '1em 1em' }}>
-        <Grid container direction='row' alignItems='center'>
-          <Grid item flexGrow={1}>
-            <TextField
-              placeholder='Search'
-              variant='outlined'
-              color='secondary'
-              fullWidth
-              size='small'
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
-                  },
-                },
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant='contained'
-              color='secondary'
-              sx={{
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-                padding: '8.1px 14px',
-              }}
-              disableElevation
-            >
-              <Search />
-            </Button>
-          </Grid>
-        </Grid>
-      </Container>
-
-      <FeedGrid />
+      {imagesData.map((images, i) => {
+        if (imagesData.length === i + 1)
+          return (
+            <FeedGrid forwardedRef={setLastElement} key={i} images={images} />
+          );
+        else return <FeedGrid key={i} images={images} />;
+      })}
+      {isLoading && (
+        <Stack direction='column' alignItems='center' sx={{ marginTop: '1em' }}>
+          <CircularProgress />
+        </Stack>
+      )}
     </>
   );
 };
