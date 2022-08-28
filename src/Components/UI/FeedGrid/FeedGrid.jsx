@@ -1,6 +1,8 @@
 import React from 'react';
 import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
 import { Replay } from '@mui/icons-material';
+import { AnimatePresence } from 'framer-motion';
+
 import ImageComponent from '../ImageComponent/ImageComponent';
 
 const FeedGrid = ({ images, forwardedRef }) => {
@@ -68,13 +70,16 @@ const FeedGrid = ({ images, forwardedRef }) => {
         </Grid>
         <Grid item sm={12} md={9}>
           <Grid container direction='row'>
-            {images.map((image, i) => (
-              <ImageComponent
-                key={i}
-                image={image.fields.image_file_name}
-                description='Test Test Test Test Test Test '
-              />
-            ))}
+            <AnimatePresence>
+              {images.map((image, i) => (
+                <ImageComponent
+                  key={i}
+                  index={i}
+                  image={image.fields.image_file_name}
+                  description='Test Test Test Test Test Test '
+                />
+              ))}
+            </AnimatePresence>
           </Grid>
         </Grid>
       </Grid>

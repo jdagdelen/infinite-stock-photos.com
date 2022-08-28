@@ -1,17 +1,25 @@
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-export default function useSearch(query, pageNo) {
+export default function useSearch(pageNo) {
   const [imagesData, setImagesData] = useState([]);
+  const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const prevPrompt = useRef();
 
   useEffect(() => {
-    if (query) {
+    const prompt = searchParams.get('prompt');
+    console.log(prompt, prevPrompt.current);
+    if (prompt) {
+      if (prompt !== prevPrompt.current) setImagesData([]);
+      prevPrompt.current = prompt;
+
       setIsLoading(true);
       axios({
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}/search`,
-        params: { prompt: query },
+        params: { prompt },
       })
         .then((res) => {
           setIsLoading(false);
@@ -19,12 +27,12 @@ export default function useSearch(query, pageNo) {
             return [...prev, ...res.data.root.children];
           });
         })
-        .catch((e) => {
+        .catch((_) => {
           setIsLoading(false);
           return;
         });
     }
-  }, [query, pageNo]);
+  }, [searchParams, pageNo]);
 
   return { imagesData, isLoading };
 }

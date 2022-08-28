@@ -19,8 +19,10 @@ const drawerWidth = 240;
 const Header = (props) => {
   const links = [
     { title: 'Feed', path: '/' },
-    { title: 'Sign Up', path: '/sign-up' },
     { title: 'Search', path: '/search' },
+    { title: 'Generate Images', path: '/generate' },
+    { title: 'Sign In', path: '/sign-in' },
+    { title: <b>Get Started</b>, path: '/register' },
   ];
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);

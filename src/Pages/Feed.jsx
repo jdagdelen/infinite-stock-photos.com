@@ -31,15 +31,19 @@ const Feed = () => {
     };
   }, [lastElement]);
 
+  useEffect(() => {
+    document.title = 'Feed';
+  }, []);
+
   return (
     <>
-      {imagesData.map((images, i) => {
-        if (imagesData.length === i + 1)
-          return (
-            <FeedGrid forwardedRef={setLastElement} key={i} images={images} />
-          );
-        else return <FeedGrid key={i} images={images} />;
-      })}
+      {imagesData.map((images, i) => (
+        <FeedGrid
+          forwardedRef={imagesData.length === i + 1 ? setLastElement : null}
+          key={i}
+          images={images}
+        />
+      ))}
       {isLoading && (
         <Stack
           direction='column'

@@ -5,14 +5,15 @@ import { useSearchParams } from 'react-router-dom';
 import SearchBar from '../Components/UI/SearchBar/SearchBar';
 import useSearch from '../hooks/useSearch';
 import ImageComponent from '../Components/UI/ImageComponent/ImageComponent';
+import { AnimatePresence } from 'framer-motion';
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const prompt = searchParams.get('prompt');
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(prompt);
   const [pageNo, setPageNo] = useState(1);
   const [lastElement, setLastElement] = useState(null);
-  const { imagesData, isLoading } = useSearch(prompt, pageNo);
+  const { imagesData, isLoading } = useSearch(pageNo);
   const observer = useRef(
     new IntersectionObserver((entries) => {
       const first = entries[0];
@@ -36,6 +37,10 @@ const Search = () => {
     };
   }, [lastElement]);
 
+  useEffect(() => {
+    document.title = 'Search';
+  }, []);
+
   return (
     <>
       <SearchBar
@@ -48,31 +53,20 @@ const Search = () => {
       />
 
       <Grid container direction='row' flexWrap='wrap'>
-        {imagesData.map((image, i) => {
-          if (imagesData.length === i + 1)
-            return (
-              <ImageComponent
-                forwardedRef={setLastElement}
-                key={i}
-                image={image.fields.image_file_name}
-                description={
-                  image.fields?.generation_prompt !== 'None' &&
-                  image.fields?.generation_prompt
-                }
-              />
-            );
-          else
-            return (
-              <ImageComponent
-                key={i}
-                image={image.fields.image_file_name}
-                description={
-                  image.fields?.generation_prompt !== 'None' &&
-                  image.fields?.generation_prompt
-                }
-              />
-            );
-        })}
+        <AnimatePresence>
+          {imagesData.map((image, i) => (
+            <ImageComponent
+              forwardedRef={imagesData.length === i + 1 ? setLastElement : null}
+              key={i}
+              index={i}
+              image={image.fields.image_file_name}
+              description={
+                image.fields?.generation_prompt !== 'None' &&
+                image.fields?.generation_prompt
+              }
+            />
+          ))}
+        </AnimatePresence>
       </Grid>
       {isLoading && (
         <Stack

@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import { Grid, Box, Typography, Stack, IconButton } from '@mui/material';
+import {
+  Grid,
+  Box,
+  Typography,
+  Stack,
+  IconButton,
+  CircularProgress,
+} from '@mui/material';
 import { FavoriteBorder, StarBorder } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import PlaceHolderImage from '../../../assets/product-image-placeholder.svg';
 import SocialShare from './SocialShare';
 
-const ImageComponent = ({ image, description, forwardedRef }) => {
+const ImageComponent = ({
+  image,
+  description,
+  forwardedRef,
+  isLoading,
+  index,
+}) => {
   const [showInfo, setShowInfo] = useState(false);
   const info = {
     initial: {
@@ -16,6 +29,18 @@ const ImageComponent = ({ image, description, forwardedRef }) => {
       opacity: 1,
     },
     exit: {
+      opacity: 0,
+    },
+  };
+
+  const images = {
+    initial: {
+      opacity: 0,
+    },
+    animate: {
+      opacity: 1,
+    },
+    hidden: {
       opacity: 0,
     },
   };
@@ -30,11 +55,16 @@ const ImageComponent = ({ image, description, forwardedRef }) => {
         maxWidth: { sm: '100%', md: '50%', lg: '25%', xl: '20%' },
         maxHeight: { sm: '100%', md: '50%', lg: '25%', xl: '20%' },
       }}
+      variants={images}
+      initail='initial'
+      animate='animate'
+      exit='hidden'
+      component={motion.div}
       onMouseOver={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
     >
       <AnimatePresence>
-        {showInfo && (
+        {showInfo && image && (
           <motion.div
             key={image}
             variants={info}
@@ -46,7 +76,7 @@ const ImageComponent = ({ image, description, forwardedRef }) => {
               padding: '0.4em',
               position: 'absolute',
               top: 'auto',
-              bottom: 0,
+              bottom: 7,
               width: '100%',
               color: 'white',
             }}
@@ -69,6 +99,16 @@ const ImageComponent = ({ image, description, forwardedRef }) => {
           </motion.div>
         )}
       </AnimatePresence>
+      {isLoading && (
+        <CircularProgress
+          color='secondary'
+          sx={{
+            position: 'absolute',
+            top: '44%',
+            left: '44%',
+          }}
+        />
+      )}
       <img src={image ?? PlaceHolderImage} alt={image} width='100%' />
     </Grid>
   );
