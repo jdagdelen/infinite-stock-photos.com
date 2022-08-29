@@ -11,13 +11,13 @@ const CustomSlider = ({ value, onChange, title, description, min, max }) => {
           </Box>
           <Input
             size='small'
-            readOnly
             value={value}
+            onChange={onChange}
             color='secondary'
             inputProps={{
-              step: 10,
-              min: 0,
-              max: 100,
+              step: 1,
+              min: min,
+              max: max,
               type: 'number',
             }}
           />

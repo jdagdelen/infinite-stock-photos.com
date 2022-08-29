@@ -76,7 +76,8 @@ const FeedGrid = ({ images, forwardedRef }) => {
                   key={i}
                   index={i}
                   image={image.fields.image_file_name}
-                  description='Test Test Test Test Test Test '
+                  description='Test Test Test Test Test Test'
+                  square
                 />
               ))}
             </AnimatePresence>

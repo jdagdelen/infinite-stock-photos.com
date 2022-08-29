@@ -64,6 +64,7 @@ const Search = () => {
                 image.fields?.generation_prompt !== 'None' &&
                 image.fields?.generation_prompt
               }
+              square
             />
           ))}
         </AnimatePresence>

@@ -59,7 +59,7 @@ const Header = (props) => {
           aria-label='open drawer'
           edge='start'
           onClick={handleDrawerToggle}
-          sx={{ mr: 2, display: { sm: 'none' } }}
+          sx={{ mr: 2, display: { md: 'none' } }}
         >
           <MenuIcon />
         </IconButton>
@@ -68,13 +68,13 @@ const Header = (props) => {
           component='div'
           sx={{
             flexGrow: 1,
-            display: { xs: 'none', sm: 'block' },
+            display: { xs: 'none', md: 'block' },
             fontWeight: 700,
           }}
         >
           InfiniteStockPhotos.com
         </Typography>
-        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           {links.map(({ title, path }, i) => (
             <NavigationLink key={i} path={path} title={title} />
           ))}
@@ -89,7 +89,7 @@ const Header = (props) => {
           keepMounted: true,
         }}
         sx={{
-          display: { xs: 'block', sm: 'none' },
+          display: { xs: 'block', md: 'none' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
         }}
       >

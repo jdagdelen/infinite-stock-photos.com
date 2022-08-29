@@ -18,7 +18,7 @@ const ImageComponent = ({
   description,
   forwardedRef,
   isLoading,
-  index,
+  square,
 }) => {
   const [showInfo, setShowInfo] = useState(false);
   const info = {
@@ -33,33 +33,21 @@ const ImageComponent = ({
     },
   };
 
-  const images = {
-    initial: {
-      opacity: 0,
-    },
-    animate: {
-      opacity: 1,
-    },
-    hidden: {
-      opacity: 0,
-    },
-  };
-
   return (
     <Grid
       ref={forwardedRef}
       item
+      flexGrow={1}
       sx={{
         position: 'relative',
-        flex: { xs: '100%', md: '50%', lg: '25%', xl: '20%' },
-        maxWidth: { sm: '100%', md: '50%', lg: '25%', xl: '20%' },
-        maxHeight: { sm: '100%', md: '50%', lg: '25%', xl: '20%' },
+        flex: square && { xs: '100%', md: '50%', lg: '25%', xl: '20%' },
+        maxWidth: square
+          ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
+          : { xs: '100%', md: '60%' },
+        maxHeight: square
+          ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
+          : { xs: '100%', md: '60%' },
       }}
-      variants={images}
-      initail='initial'
-      animate='animate'
-      exit='hidden'
-      component={motion.div}
       onMouseOver={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
     >
