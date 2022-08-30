@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import PlaceHolderImage from '../../../assets/product-image-placeholder.svg';
 import SocialShare from './SocialShare';
+import ZoomedImage from './ZoomedImage';
 
 const ImageComponent = ({
   image,
@@ -21,6 +22,7 @@ const ImageComponent = ({
   square,
 }) => {
   const [showInfo, setShowInfo] = useState(false);
+  const [showZoomed, setShowZoomed] = useState(false);
   const info = {
     initial: {
       opacity: 0,
@@ -97,7 +99,20 @@ const ImageComponent = ({
           }}
         />
       )}
-      <img src={image ?? PlaceHolderImage} alt={image} width='100%' />
+      <img
+        src={image ?? PlaceHolderImage}
+        alt={image}
+        onClick={() => image && setShowZoomed(!showZoomed)}
+        width='100%'
+      />
+      <AnimatePresence>
+        {showZoomed && (
+          <ZoomedImage
+            image={image}
+            onClose={() => setShowZoomed(!showZoomed)}
+          />
+        )}
+      </AnimatePresence>
     </Grid>
   );
 };

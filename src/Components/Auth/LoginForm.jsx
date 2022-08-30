@@ -9,6 +9,7 @@ import {
   Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Google } from '@mui/icons-material';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -54,6 +55,16 @@ const LoginForm = () => {
           </Typography>
         </Stack>
       </CardContent>
+      <Button
+        variant='contained'
+        color='error'
+        fullWidth
+        sx={{ borderRadius: 0 }}
+        startIcon={<Google />}
+        disableElevation
+      >
+        Sign In
+      </Button>
       <Button
         variant='contained'
         color='secondary'

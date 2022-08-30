@@ -10,7 +10,6 @@ export default function useSearch(pageNo) {
 
   useEffect(() => {
     const prompt = searchParams.get('prompt');
-    console.log(prompt, prevPrompt.current);
     if (prompt) {
       if (prompt !== prevPrompt.current) setImagesData([]);
       prevPrompt.current = prompt;

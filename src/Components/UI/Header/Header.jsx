@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   AppBar,
+  Avatar,
   Box,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -11,19 +13,35 @@ import {
   Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+
 import NavigationLink from './NavigationLink';
 import MobileNavigationLink from './MobileNavigationLink';
+import useAuth from '../../../hooks/useAuth';
+import Modal from '../Modal/Modal';
 
 const drawerWidth = 240;
 
 const Header = (props) => {
-  const links = [
-    { title: 'Feed', path: '/' },
-    { title: 'Search', path: '/search' },
-    { title: 'Generate Images', path: '/generate' },
-    { title: 'Sign In', path: '/sign-in' },
-    { title: <b>Get Started</b>, path: '/register' },
-  ];
+  const { isLoggedIn, logout } = useAuth();
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
+  const links = isLoggedIn
+    ? [
+        { title: 'Feed', path: '/' },
+        { title: 'Search', path: '/search' },
+        { title: 'Generate Images', path: '/generate' },
+      ]
+    : [
+        { title: 'Feed', path: '/' },
+        { title: 'Search', path: '/search' },
+        { title: 'Generate Images', path: '/generate' },
+        { title: 'Membership', path: '/manage-account' },
+        { title: 'Sign In', path: '/sign-in' },
+        { title: <b>Get Started</b>, path: '/register' },
+      ];
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const container =
@@ -43,6 +61,13 @@ const Header = (props) => {
         {links.map(({ title, path }, i) => (
           <MobileNavigationLink key={i} path={path} title={title} />
         ))}
+        {isLoggedIn && (
+          <>
+            <Button color='secondary' sx={{ color: 'white' }} onClick={logout}>
+              Logout
+            </Button>
+          </>
+        )}
       </List>
     </Box>
   );
@@ -51,9 +76,9 @@ const Header = (props) => {
     <AppBar
       component='nav'
       color='secondary'
-      sx={{ position: 'relative', boxShadow: 'none' }}
+      sx={{ position: 'relative', boxShadow: 'none', zIndex: 500 }}
     >
-      <Toolbar>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         <IconButton
           color='inherit'
           aria-label='open drawer'
@@ -79,6 +104,35 @@ const Header = (props) => {
             <NavigationLink key={i} path={path} title={title} />
           ))}
         </Box>
+        {isLoggedIn && (
+          <span>
+            <Button
+              color='secondary'
+              sx={{ color: '#fff', fontSize: '1rem', textDecoration: 'none' }}
+              onClick={logout}
+            >
+              Logout
+            </Button>
+            <IconButton onClick={() => setShowModal(!showModal)}>
+              <Avatar sx={{ backgroundColor: 'transparent' }} />
+            </IconButton>
+            <AnimatePresence>
+              {showModal && (
+                <Modal key='modal' onClose={() => setShowModal(!showModal)}>
+                  <Typography>Current Membership: Free</Typography>
+                  <Button
+                    fullWidth
+                    color='secondary'
+                    variant='contained'
+                    onClick={() => navigate('/manage-account')}
+                  >
+                    Manage Account
+                  </Button>
+                </Modal>
+              )}
+            </AnimatePresence>
+          </span>
+        )}
       </Toolbar>
       <Drawer
         container={container}

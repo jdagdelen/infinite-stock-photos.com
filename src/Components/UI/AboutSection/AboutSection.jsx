@@ -50,7 +50,7 @@ const AboutSection = () => {
             Search the library of user generated photos for free.
           </Typography>
           <Typography color='secondary' fontWeight={700} gutterBottom>
-            Generate 1000 photos/month
+            Generate 400 photos/month
           </Typography>
         </Grid>
         <Grid item xs={12} md={4}>
