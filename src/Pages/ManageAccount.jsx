@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Button,
@@ -6,16 +6,24 @@ import {
   Grid,
   Stack,
   Typography,
+  Box,
 } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
 
 import Modal from '../Components/UI/Modal/Modal';
 import userFeatures from '../utils/user-features';
+import useAuth from '../hooks/useAuth';
+import AuthGuard from '../utils/AuthGuard';
 
 const ManageAccount = () => {
+  useEffect(() => {
+    document.title = 'Get Started';
+  }, []);
+
   const [showChangePlanModal, setShowChangePlanModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const { features, upgradeText } = userFeatures('Basic');
+  const { user } = useAuth();
 
   const planModal = (
     <Modal
@@ -86,42 +94,53 @@ const ManageAccount = () => {
   );
 
   return (
-    <Container maxWidth='xl' sx={{ padding: '1em', textAlign: 'center' }}>
-      <Stack direciton='column' alignItems='center'>
-        <Avatar alt='Profile' sx={{ width: 120, height: 120 }} />
-        <Button color='secondary'>Change Profile Picture</Button>
-        <Typography color='GrayText'>
-          Membership Level: <b>Basic</b>
-        </Typography>
-        <Typography color='GrayText' variant='subtitle2'>
-          {features}
-        </Typography>
-        <Typography color='primary' variant='subtitle2' gutterBottom>
-          {upgradeText}
-        </Typography>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => setShowChangePlanModal(!showChangePlanModal)}
-        >
-          Change Plan
-        </Button>
-        <Typography color='GrayText' marginTop='1em'>
-          Security and Password
-        </Typography>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => setShowChangePasswordModal(!showChangePasswordModal)}
-        >
-          Change Password
-        </Button>
-      </Stack>
-      <AnimatePresence>{showChangePlanModal && planModal}</AnimatePresence>
-      <AnimatePresence>
-        {showChangePasswordModal && passwordModal}
-      </AnimatePresence>
-    </Container>
+    <Box sx={{ position: 'relative' }}>
+      <AuthGuard>
+        <Container maxWidth='xl' sx={{ padding: '1em', textAlign: 'center' }}>
+          <Stack direciton='column' alignItems='center'>
+            <Avatar
+              alt='Profile'
+              src={user.photoURL}
+              referrerPolicy='no-referrer'
+              sx={{ width: 120, height: 120 }}
+            />
+            <Button color='secondary'>Change Profile Picture</Button>
+            <Typography color='GrayText'>
+              Membership Level: <b>Basic</b>
+            </Typography>
+            <Typography color='GrayText' variant='subtitle2'>
+              {features}
+            </Typography>
+            <Typography color='primary' variant='subtitle2' gutterBottom>
+              {upgradeText}
+            </Typography>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={() => setShowChangePlanModal(!showChangePlanModal)}
+            >
+              Change Plan
+            </Button>
+            <Typography color='GrayText' marginTop='1em'>
+              Security and Password
+            </Typography>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={() =>
+                setShowChangePasswordModal(!showChangePasswordModal)
+              }
+            >
+              Change Password
+            </Button>
+          </Stack>
+          <AnimatePresence>{showChangePlanModal && planModal}</AnimatePresence>
+          <AnimatePresence>
+            {showChangePasswordModal && passwordModal}
+          </AnimatePresence>
+        </Container>
+      </AuthGuard>
+    </Box>
   );
 };
 

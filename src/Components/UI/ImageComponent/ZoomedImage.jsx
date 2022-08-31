@@ -5,13 +5,13 @@ import { Box, Container } from '@mui/material';
 const ZoomedImage = ({ image, onClose }) => {
   const backdrop = {
     initial: {
-      backgroundColor: 'transparent',
+      backgroundColor: 'rgba(0,0,0,0)',
     },
     animate: {
       backgroundColor: 'rgba(0,0,0,0.5)',
     },
     exit: {
-      backgroundColor: 'transparent',
+      backgroundColor: 'rgba(0,0,0,0)',
     },
   };
   const modal = {
@@ -67,7 +67,6 @@ const ZoomedImage = ({ image, onClose }) => {
           src={image}
           alt={image}
           width='90%'
-          height='90%'
           style={{ zIndex: 1000, display: 'block' }}
         />
       </Container>

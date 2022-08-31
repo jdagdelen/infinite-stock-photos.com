@@ -5,7 +5,7 @@ import {
   Typography,
   Stack,
   IconButton,
-  CircularProgress,
+  LinearProgress,
 } from '@mui/material';
 import { FavoriteBorder, StarBorder } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,6 +23,7 @@ const ImageComponent = ({
 }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [showZoomed, setShowZoomed] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const info = {
     initial: {
       opacity: 0,
@@ -89,20 +90,22 @@ const ImageComponent = ({
           </motion.div>
         )}
       </AnimatePresence>
-      {isLoading && (
-        <CircularProgress
+      {(isLoading || !isLoaded) && (
+        <LinearProgress
           color='secondary'
           sx={{
             position: 'absolute',
-            top: '44%',
-            left: '44%',
+            width: '100%',
+            top: 0,
+            left: 0,
           }}
         />
       )}
       <img
-        src={image ?? PlaceHolderImage}
+        src={isLoaded ? image : PlaceHolderImage}
         alt={image}
-        onClick={() => image && setShowZoomed(!showZoomed)}
+        onClick={() => isLoaded && setShowZoomed(!showZoomed)}
+        onLoad={() => setIsLoaded(true)}
         width='100%'
       />
       <AnimatePresence>

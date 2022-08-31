@@ -1,5 +1,8 @@
-import axios from 'axios';
 import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import useAuth from './useAuth';
 
 export default function useGenerate() {
   const [width, setWidth] = useState(512);
@@ -8,20 +11,36 @@ export default function useGenerate() {
   const [noOfImages, setNoOfImages] = useState(1);
   const [seed, setSeed] = useState('');
   const [useSeed, setUseSeed] = useState(false);
-  const [message, setMessage] = useState('');
+  const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [imagesData, setImagesData] = useState([]);
 
+  const navigate = useNavigate();
+
+  const { token, isLoggedIn } = useAuth();
+
   const generateImages = () => {
+    if (!isLoggedIn) navigate('/sign-in');
     setIsLoading(true);
     axios({
       method: 'GET',
       url: `${process.env.REACT_APP_API_URL}/generate_fast`,
-      params: { prompt: 'Volatile' },
+      params: {
+        prompt: 'Picture',
+        width,
+        height,
+        prompt_weight: promptWeighting,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => {
         setIsLoading(false);
+        setImagesData((prev) => {
+          return [...prev, ...res.data.image_urls];
+        });
         console.log(res.data);
       })
       .catch((err) => {
@@ -43,8 +62,8 @@ export default function useGenerate() {
     setSeed,
     useSeed,
     setUseSeed,
-    message,
-    setMessage,
+    prompt,
+    setPrompt,
     isLoading,
     isDrawerOpen,
     setIsDrawerOpen,

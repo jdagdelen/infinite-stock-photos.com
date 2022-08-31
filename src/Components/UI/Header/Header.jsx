@@ -24,7 +24,7 @@ import Modal from '../Modal/Modal';
 const drawerWidth = 240;
 
 const Header = (props) => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, user } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -38,7 +38,6 @@ const Header = (props) => {
         { title: 'Feed', path: '/' },
         { title: 'Search', path: '/search' },
         { title: 'Generate Images', path: '/generate' },
-        { title: 'Membership', path: '/manage-account' },
         { title: 'Sign In', path: '/sign-in' },
         { title: <b>Get Started</b>, path: '/register' },
       ];
@@ -114,7 +113,11 @@ const Header = (props) => {
               Logout
             </Button>
             <IconButton onClick={() => setShowModal(!showModal)}>
-              <Avatar sx={{ backgroundColor: 'transparent' }} />
+              <Avatar
+                sx={{ backgroundColor: 'transparent' }}
+                src={user.photoURL}
+                referrerPolicy='no-referrer'
+              />
             </IconButton>
             <AnimatePresence>
               {showModal && (

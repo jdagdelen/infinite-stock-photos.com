@@ -33,9 +33,10 @@ const GenerateImages = () => {
     isDrawerOpen,
     setIsDrawerOpen,
     isLoading,
-    message,
-    setMessage,
+    prompt,
+    setPrompt,
     generateImages,
+    imagesData,
   } = useGenerate();
 
   useEffect(() => {
@@ -158,9 +159,13 @@ const GenerateImages = () => {
                 }}
               >
                 <AnimatePresence>
-                  {Array.from(Array(noOfImages).keys()).map((_, i) => (
-                    <ImageComponent key={i} isLoading={isLoading} />
-                  ))}
+                  {imagesData.length > 0
+                    ? imagesData.map((image, i) => (
+                        <ImageComponent key={i} image={image} />
+                      ))
+                    : Array.from(Array(noOfImages).keys()).map((_, i) => (
+                        <ImageComponent key={i} isLoading={isLoading} />
+                      ))}
                 </AnimatePresence>
               </Grid>
             </Grid>
@@ -184,8 +189,8 @@ const GenerateImages = () => {
                       multiline
                       fullWidth
                       color='secondary'
-                      value={message}
-                      onChange={({ target }) => setMessage(target.value)}
+                      value={prompt}
+                      onChange={({ target }) => setPrompt(target.value)}
                       InputProps={{
                         style: {
                           backgroundColor: 'white',

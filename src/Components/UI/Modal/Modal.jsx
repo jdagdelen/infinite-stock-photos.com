@@ -5,13 +5,13 @@ import { Box, Card, CardContent, Container } from '@mui/material';
 const Modal = ({ children, onClose, maxWidth = 'sm' }) => {
   const backdrop = {
     initial: {
-      backgroundColor: 'transparent',
+      backgroundColor: 'rgba(0,0,0,0)',
     },
     animate: {
       backgroundColor: 'rgba(0,0,0,0.5)',
     },
     exit: {
-      backgroundColor: 'transparent',
+      backgroundColor: 'rgba(0,0,0,0)',
     },
   };
   const modal = {
@@ -42,6 +42,7 @@ const Modal = ({ children, onClose, maxWidth = 'sm' }) => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        zIndex: 1000,
       }}
       onClick={onClose}
     >
