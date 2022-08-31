@@ -20,6 +20,27 @@ export default function useGenerate() {
 
   const { token, isLoggedIn } = useAuth();
 
+  function UrlExists(url) {
+    const response = fetch(
+      `${process.env.REACT_APP_API_URL}/check_image?image=` + url
+    )
+      .then((response) => response.json())
+      .catch();
+    return response;
+  }
+
+  async function waitForIt(url) {
+    while (!(await UrlExists(url))) {
+      console.log('waiting 10s');
+      await new Promise((r) => setTimeout(r, 10000));
+    }
+    setImagesData((prev) => {
+      return [...prev, url];
+    });
+    setIsLoading(false);
+    return url;
+  }
+
   const generateImages = () => {
     if (!isLoggedIn) navigate('/sign-in');
     setIsLoading(true);
@@ -27,7 +48,7 @@ export default function useGenerate() {
       method: 'GET',
       url: `${process.env.REACT_APP_API_URL}/generate_fast`,
       params: {
-        prompt: 'Picture',
+        prompt: prompt,
         width,
         height,
         prompt_weight: promptWeighting,
@@ -37,15 +58,10 @@ export default function useGenerate() {
       },
     })
       .then((res) => {
-        setIsLoading(false);
-        setImagesData((prev) => {
-          return [...prev, ...res.data.image_urls];
-        });
-        console.log(res.data);
+        res.data.image_urls.forEach(async (i) => await waitForIt(i));
       })
-      .catch((err) => {
+      .catch((_) => {
         setIsLoading(false);
-        console.log(err);
       });
   };
 

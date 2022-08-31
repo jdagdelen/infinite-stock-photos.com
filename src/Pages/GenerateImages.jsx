@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import {
   Button,
+  CircularProgress,
   Container,
   Drawer,
   Grid,
@@ -205,10 +206,16 @@ const GenerateImages = () => {
                       sx={{
                         width: { xs: '100%', md: 'auto' },
                         marginTop: { xs: '1em', md: 0 },
+                        transition: 'all 0.1s ease',
                       }}
                       onClick={generateImages}
+                      disabled={isLoading}
                     >
-                      Generate
+                      {isLoading ? (
+                        <CircularProgress color='secondary' size={30} />
+                      ) : (
+                        'Generate'
+                      )}
                     </Button>
                   </Grid>
                 </Grid>

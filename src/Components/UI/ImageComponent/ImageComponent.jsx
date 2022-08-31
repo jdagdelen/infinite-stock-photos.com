@@ -55,7 +55,7 @@ const ImageComponent = ({
       onMouseLeave={() => setShowInfo(false)}
     >
       <AnimatePresence>
-        {showInfo && image && (
+        {showInfo && image && isLoaded && (
           <motion.div
             key={image}
             variants={info}
@@ -90,7 +90,7 @@ const ImageComponent = ({
           </motion.div>
         )}
       </AnimatePresence>
-      {(isLoading || !isLoaded) && (
+      {((!image && isLoading) || (!image && !isLoaded)) && (
         <LinearProgress
           color='secondary'
           sx={{
@@ -102,7 +102,7 @@ const ImageComponent = ({
         />
       )}
       <img
-        src={isLoaded ? image : PlaceHolderImage}
+        src={image && isLoaded ? image : PlaceHolderImage}
         alt={image}
         onClick={() => isLoaded && setShowZoomed(!showZoomed)}
         onLoad={() => setIsLoaded(true)}
