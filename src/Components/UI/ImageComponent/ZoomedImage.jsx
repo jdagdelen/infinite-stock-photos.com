@@ -67,7 +67,12 @@ const ZoomedImage = ({ image, onClose }) => {
           src={image}
           alt={image}
           width='90%'
-          style={{ zIndex: 1000, display: 'block' }}
+          style={{
+            zIndex: 1000,
+            display: 'block',
+            maxHeight: '90%',
+            maxWidth: '90%',
+          }}
         />
       </Container>
     </Box>

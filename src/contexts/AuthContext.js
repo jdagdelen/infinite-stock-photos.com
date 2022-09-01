@@ -10,6 +10,7 @@ import {
   sendEmailVerification,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -33,7 +34,12 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    photoURL: '',
+    role: '',
+  });
   const [token, setToken] = useState(null);
   const [uid, setUid] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -46,6 +52,15 @@ export const AuthProvider = ({ children }) => {
         setUser(user);
         setToken(user.accessToken);
         setIsLoggedIn(true);
+        user.getIdTokenResult().then((idTokenResult) => {
+          const role = idTokenResult.claims.stripeRole;
+          setUser({
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            role,
+          });
+        });
       } else {
         setUser({});
         setIsLoggedIn(false);
@@ -79,17 +94,19 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, after) => {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoading(false);
+      after();
     } catch (error) {
       setErrorMessage(authError(error.code));
       setIsLoading(false);
-      return;
     }
   };
+
+  const resetPassword = (email) => sendPasswordResetEmail(auth, email);
 
   const register = (email, password) => {
     setIsLoading(true);
@@ -126,13 +143,16 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const firebaseGoogleSignIn = async (page) => {
+  const firebaseGoogleSignIn = async (page, after) => {
     setIsLoading(true);
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
       const userCredentials = await firebase.auth().signInWithPopup(provider);
       if (page === 'register') setUid(userCredentials.user.uid);
-      else setIsLoading(false);
+      else {
+        setIsLoading(false);
+        after();
+      }
     } catch (error) {
       setErrorMessage(authError(error.code));
       setIsLoading(false);
@@ -154,6 +174,7 @@ export const AuthProvider = ({ children }) => {
         showSuccessModal,
         setShowSuccessModal,
         isLoading,
+        resetPassword,
       }}
     >
       {children}

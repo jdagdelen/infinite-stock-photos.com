@@ -3,9 +3,25 @@ body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding-right: 0 !important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: transparent;
+  outline: none;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-image: linear-gradient(#b8aabb 30%, #9c27b0 20%, #b8aabb 30%);
+  outline: none;
 }

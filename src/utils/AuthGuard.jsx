@@ -17,8 +17,7 @@ const AuthGuard = ({ children, path = '/sign-in' }) => {
       navigate(path, { replace: true });
     } else if (isLoggedIn) {
       const currentPath = window.location.pathname;
-      if (currentPath === '/sign-in' || currentPath === '/register')
-        navigate('/', { replace: true });
+      if (currentPath === '/sign-in') navigate('/', { replace: true });
 
       setIsLoading(true);
     } else {

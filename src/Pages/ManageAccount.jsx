@@ -7,11 +7,13 @@ import {
   Stack,
   Typography,
   Box,
+  LinearProgress,
 } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
 
 import Modal from '../Components/UI/Modal/Modal';
 import userFeatures from '../utils/user-features';
+import capitalizeFirstLetter from '../utils/capitalize-first-letter';
 import useAuth from '../hooks/useAuth';
 import AuthGuard from '../utils/AuthGuard';
 
@@ -22,8 +24,11 @@ const ManageAccount = () => {
 
   const [showChangePlanModal, setShowChangePlanModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
-  const { features, upgradeText } = userFeatures('Basic');
-  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, resetPassword } = useAuth();
+  const { features, upgradeText } = userFeatures(
+    user.role ? user.role : 'basic'
+  );
 
   const planModal = (
     <Modal
@@ -32,7 +37,8 @@ const ManageAccount = () => {
       maxWidth='lg'
     >
       <Typography color='GrayText'>
-        Current Membership Level: <b>Basic</b>
+        Current Membership Level:{' '}
+        <b>{user.role ? capitalizeFirstLetter(user.role) : 'Basic'}</b>
       </Typography>
       <Grid container>
         <Grid item xs={12} md={4}>
@@ -43,7 +49,11 @@ const ManageAccount = () => {
               <Typography>- No generation credits</Typography>
             </Grid>
             <Grid item>
-              <Button variant='contained' color='secondary' disabled>
+              <Button
+                variant='contained'
+                color='secondary'
+                disabled={!user.role}
+              >
                 Current Plan
               </Button>
             </Grid>
@@ -52,11 +62,15 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Basic (Free):</Typography>
+              <Typography>Pro (4.99$):</Typography>
               <Typography>- 400 generations/month</Typography>
             </Grid>
             <Grid item>
-              <Button variant='contained' color='secondary'>
+              <Button
+                variant='contained'
+                color='secondary'
+                disabled={user.role === 'pro'}
+              >
                 Select Plan
               </Button>
             </Grid>
@@ -65,11 +79,15 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Basic (Free):</Typography>
+              <Typography>Premium (14.99$):</Typography>
               <Typography>- Unlimited generations/month</Typography>
             </Grid>
             <Grid item>
-              <Button variant='contained' color='secondary'>
+              <Button
+                variant='contained'
+                color='secondary'
+                disabled={user.role === 'premium'}
+              >
                 Select Plan
               </Button>
             </Grid>
@@ -95,18 +113,25 @@ const ManageAccount = () => {
 
   return (
     <Box sx={{ position: 'relative' }}>
+      {isLoading && <LinearProgress color='secondary' />}
       <AuthGuard>
         <Container maxWidth='xl' sx={{ padding: '1em', textAlign: 'center' }}>
           <Stack direciton='column' alignItems='center'>
             <Avatar
-              alt='Profile'
+              alt={user.name}
               src={user.photoURL}
               referrerPolicy='no-referrer'
-              sx={{ width: 120, height: 120 }}
+              sx={{ width: 120, height: 120, marginBottom: '1em' }}
             />
-            <Button color='secondary'>Change Profile Picture</Button>
+            <Typography color='GrayText' variant='subtitle2'>
+              {user.name}
+            </Typography>
+            <Typography color='GrayText' variant='subtitle2'>
+              {user.email}
+            </Typography>
             <Typography color='GrayText'>
-              Membership Level: <b>Basic</b>
+              Membership Level:{' '}
+              <b>{user.role ? capitalizeFirstLetter(user.role) : 'Basic'}</b>
             </Typography>
             <Typography color='GrayText' variant='subtitle2'>
               {features}
@@ -127,9 +152,16 @@ const ManageAccount = () => {
             <Button
               variant='contained'
               color='secondary'
-              onClick={() =>
-                setShowChangePasswordModal(!showChangePasswordModal)
-              }
+              onClick={async () => {
+                setIsLoading(true);
+                try {
+                  await resetPassword(user.email);
+                  setShowChangePasswordModal(!showChangePasswordModal);
+                  setIsLoading(false);
+                } catch (error) {
+                  setIsLoading(false);
+                }
+              }}
             >
               Change Password
             </Button>

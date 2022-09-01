@@ -18,20 +18,19 @@ export default function useGenerate() {
 
   const navigate = useNavigate();
 
-  const { token, isLoggedIn } = useAuth();
+  const { token, isLoggedIn, user } = useAuth();
 
   function UrlExists(url) {
     const response = fetch(
       `${process.env.REACT_APP_API_URL}/check_image?image=` + url
     )
       .then((response) => response.json())
-      .catch();
+      .catch((e) => console.log(e));
     return response;
   }
 
   async function waitForIt(url) {
     while (!(await UrlExists(url))) {
-      console.log('waiting 10s');
       await new Promise((r) => setTimeout(r, 10000));
     }
     setImagesData((prev) => {
@@ -43,6 +42,7 @@ export default function useGenerate() {
 
   const generateImages = () => {
     if (!isLoggedIn) navigate('/sign-in');
+    if (!!!user.role) navigate('/manage-account');
     setIsLoading(true);
     axios({
       method: 'GET',
@@ -60,7 +60,8 @@ export default function useGenerate() {
       .then((res) => {
         res.data.image_urls.forEach(async (i) => await waitForIt(i));
       })
-      .catch((_) => {
+      .catch((e) => {
+        console.log(e);
         setIsLoading(false);
       });
   };

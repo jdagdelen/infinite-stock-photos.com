@@ -1,21 +1,29 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ListItem, ListItemButton, ListItemText } from '@mui/material';
+import {
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 
-const MobileNavigationLink = ({ path, title }) => {
+const MobileNavigationLink = ({ path, title, icon }) => {
   return (
     <ListItem disablePadding>
       <NavLink
         to={path}
         style={({ isActive }) => ({
-          borderLeft: isActive ? '5px solid black' : 'none',
+          backgroundColor: isActive ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0)',
           color: 'black',
           fontSize: '1rem',
           textDecoration: 'none',
-          padding: '0.5em 1em',
+          padding: '0.2em 1em',
+          textAlign: 'left',
+          width: '100%',
         })}
       >
-        <ListItemButton sx={{ textAlign: 'center' }}>
+        <ListItemButton>
+          <ListItemIcon>{icon}</ListItemIcon>
           <ListItemText primary={title} />
         </ListItemButton>
       </NavLink>

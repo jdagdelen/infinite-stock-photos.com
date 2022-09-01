@@ -22,8 +22,7 @@ const LoginForm = () => {
     <form
       onSubmit={async (e) => {
         e.preventDefault();
-        await login(email, password);
-        navigate('/', { replace: true });
+        await login(email, password, () => navigate('/', { replace: true }));
       }}
     >
       <Card sx={{ position: 'relative' }}>
@@ -96,8 +95,9 @@ const LoginForm = () => {
           disableElevation
           type='button'
           onClick={async () => {
-            await firebaseGoogleSignIn('login');
-            navigate('/', { replace: true });
+            await firebaseGoogleSignIn('login', () =>
+              navigate('/', { replace: true })
+            );
           }}
         >
           Sign In
