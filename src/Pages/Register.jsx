@@ -1,3 +1,7 @@
+//------ Path ------ //
+//------  /register   ------ //
+//------------------ //
+
 import React, { useEffect } from 'react';
 import { Box, Container, Grid } from '@mui/material';
 

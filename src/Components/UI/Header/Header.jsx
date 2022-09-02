@@ -199,6 +199,11 @@ const Header = (props) => {
                   <Typography marginY='0.5em'>
                     {user.name ?? user.email}
                   </Typography>
+                  <Typography marginY='0.5em'>
+                    {user.role === 'pro'
+                      ? 'Credits: 400'
+                      : 'Credits: Unlimited'}
+                  </Typography>
                 </Stack>
                 <MenuItem onClick={() => navigate('/manage-account')}>
                   <ListItemIcon>

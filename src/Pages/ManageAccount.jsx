@@ -1,3 +1,7 @@
+//------ Path ------ //
+//------  /manage-account   ------ //
+//------------------ //
+
 import React, { useEffect, useState } from 'react';
 import {
   Avatar,
@@ -19,7 +23,7 @@ import AuthGuard from '../utils/AuthGuard';
 
 const ManageAccount = () => {
   useEffect(() => {
-    document.title = 'Get Started';
+    document.title = 'Manage';
   }, []);
 
   const [showChangePlanModal, setShowChangePlanModal] = useState(false);

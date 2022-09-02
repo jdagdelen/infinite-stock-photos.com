@@ -1,7 +1,15 @@
 import React from 'react';
 import { Grid, Stack, Typography, Input, Slider, Box } from '@mui/material';
 
-const CustomSlider = ({ value, onChange, title, description, min, max }) => {
+const CustomSlider = ({
+  value,
+  onChange,
+  title,
+  description,
+  min,
+  max,
+  step = 1,
+}) => {
   return (
     <Grid container direction='column'>
       <Grid item>
@@ -15,7 +23,7 @@ const CustomSlider = ({ value, onChange, title, description, min, max }) => {
             onChange={onChange}
             color='secondary'
             inputProps={{
-              step: 1,
+              step,
               min: min,
               max: max,
               type: 'number',
@@ -33,6 +41,7 @@ const CustomSlider = ({ value, onChange, title, description, min, max }) => {
           color='secondary'
           value={value}
           onChange={onChange}
+          step={step}
           min={min}
           max={max}
         />

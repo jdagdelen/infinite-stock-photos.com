@@ -1,3 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+//------ Path ------ //
+//------ /generate ------ //
+//------------------ //
+
 import React, { useEffect } from 'react';
 import {
   Button,
@@ -11,6 +16,7 @@ import {
   TextField,
 } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 
 import CustomSlider from '../Components/UI/CustomSlider/CustomSlider';
 import useGenerate from '../hooks/useGenerate';
@@ -39,9 +45,19 @@ const GenerateImages = () => {
     generateImages,
     imagesData,
   } = useGenerate();
+  const [searchParams, _] = useSearchParams();
 
   useEffect(() => {
     document.title = 'Generate Images';
+    const prompt = searchParams.get('prompt');
+    const seed = searchParams.get('seed');
+    const promptScale = searchParams.get('promptScale');
+    if (prompt) setPrompt(prompt);
+    if (seed) {
+      setUseSeed(true);
+      setSeed(seed);
+    }
+    if (promptScale) setPromptWeighting(promptScale);
   }, []);
 
   const mobileDrawer = (
@@ -227,9 +243,10 @@ const GenerateImages = () => {
         <Grid item xs={12} md={2} sx={{ display: { xs: 'none', md: 'block' } }}>
           <Stack direction='column' alignItems='center' sx={{ height: '100%' }}>
             <CustomSlider
-              min={50}
+              min={512}
               max={1024}
               value={width}
+              step={8}
               onChange={(e, v) =>
                 setWidth(
                   typeof e.target.value === 'string'
@@ -240,9 +257,10 @@ const GenerateImages = () => {
               title='Width'
             />
             <CustomSlider
-              min={50}
+              min={512}
               max={1024}
               value={height}
+              step={8}
               onChange={(e, v) =>
                 setHeight(
                   typeof e.target.value === 'string'
@@ -256,6 +274,7 @@ const GenerateImages = () => {
               min={1}
               max={10}
               value={promptWeighting}
+              step={0.1}
               onChange={(e, v) =>
                 setPromptWeighting(
                   typeof e.target.value === 'string'

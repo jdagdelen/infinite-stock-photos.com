@@ -1,3 +1,7 @@
+//------ Path ------ //
+//------  /search   ------ //
+//------------------ //
+
 import React, { useEffect, useState, useRef } from 'react';
 import { Stack, CircularProgress, Grid } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';

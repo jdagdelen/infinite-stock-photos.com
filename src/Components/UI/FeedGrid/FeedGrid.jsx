@@ -2,10 +2,19 @@ import React from 'react';
 import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
 import { Replay } from '@mui/icons-material';
 import { AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 import ImageComponent from '../ImageComponent/ImageComponent';
 
 const FeedGrid = ({ images, forwardedRef }) => {
+  const navigate = useNavigate();
+  const { prompt, promptScale, seed } = {
+    prompt:
+      'Side profile centered painted portrait, Imogen Poots as a paladin, blonde hair, Gloomhaven matte painting concept art, beautifully backlit, official fanart behance artstation by Jesper Ejsing, by RHADS and Makoto Shinkai and Lois van baarle and ilya kuvshinov and rossdraws',
+    seed: 2747573893,
+    promptScale: 7,
+  };
+
   return (
     <>
       <Grid
@@ -17,19 +26,19 @@ const FeedGrid = ({ images, forwardedRef }) => {
         <Grid item sm={12} md={3} sx={{ padding: '1em' }}>
           <Card>
             <CardContent>
-              <Typography>
-                Side profile centered painted portrait, Imogen Poots as a
-                paladin, blonde hair, Gloomhaven matte painting concept art,
-                beautifully backlit, official fanart behance hd artstation by
-                Jesper Ejsing, by RHADS and Makoto Shinkai and Lois van baarle
-                and ilya kuvshinov and rossdraws
-              </Typography>
+              <Typography>{prompt}</Typography>
               <Button
                 variant='contained'
                 color='secondary'
                 fullWidth
                 disableElevation
                 startIcon={<Replay />}
+                onClick={() =>
+                  navigate({
+                    pathname: '/generate',
+                    search: `?prompt=${prompt}&seed=${seed}&promptScale=${promptScale}`,
+                  })
+                }
               >
                 Remix Prompt
               </Button>
@@ -42,7 +51,7 @@ const FeedGrid = ({ images, forwardedRef }) => {
           >
             Seed
           </Typography>
-          <Typography variant='subtitle1'>2747573893</Typography>
+          <Typography variant='subtitle1'>{seed}</Typography>
           <Typography
             variant='subtitle2'
             color='GrayText'
@@ -50,7 +59,7 @@ const FeedGrid = ({ images, forwardedRef }) => {
           >
             Prompt Scale
           </Typography>
-          <Typography variant='subtitle1'>7</Typography>
+          <Typography variant='subtitle1'>{promptScale}</Typography>
           <Typography
             variant='subtitle2'
             color='GrayText'
