@@ -5,11 +5,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Stack, CircularProgress, Grid } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
 import SearchBar from '../Components/UI/SearchBar/SearchBar';
 import useSearch from '../hooks/useSearch';
 import ImageComponent from '../Components/UI/ImageComponent/ImageComponent';
-import { AnimatePresence } from 'framer-motion';
+import ScrollToTopButton from '../Components/UI/ScrollToTopButton/ScrollToTopButton';
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -82,6 +83,7 @@ const Search = () => {
           <CircularProgress />
         </Stack>
       )}
+      <ScrollToTopButton />
     </>
   );
 };

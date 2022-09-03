@@ -3,6 +3,7 @@ import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
 import { Replay } from '@mui/icons-material';
 import { AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 import ImageComponent from '../ImageComponent/ImageComponent';
 
@@ -16,22 +17,13 @@ const FeedGrid = ({
   const navigate = useNavigate();
   const { prompt, promptScale, seed, height, modelVersion, width } = {
     prompt: generationPrompt,
-    seed: timestamp,
+    seed: generationDetails.seed ?? -1,
     promptScale: generationDetails.prompt_strength,
     width: generationDetails.width,
     height: generationDetails.height,
     modelVersion: generationDetails.model_version,
   };
-  const tStamp = new Date(timestamp);
-  var options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    minute: 'numeric',
-    hour: 'numeric',
-    second: 'numeric',
-  };
+  const tStamp = moment.unix(timestamp);
 
   return (
     <>
@@ -41,8 +33,8 @@ const FeedGrid = ({
         direction='row'
         sx={{ marginTop: '1em' }}
       >
-        <Grid item sm={12} md={3} sx={{ padding: '1em' }}>
-          <Card>
+        <Grid item sm={12} md={3} sx={{ padding: '1em', width: '100%' }}>
+          <Card sx={{ width: '100%' }}>
             <CardContent>
               <Typography>{prompt}</Typography>
               <Button
@@ -85,9 +77,8 @@ const FeedGrid = ({
           >
             Created
           </Typography>
-          <Typography variant='subtitle1'>{`${tStamp.toLocaleString(
-            'en-US',
-            options
+          <Typography variant='subtitle1'>{`${tStamp.format(
+            'LLL'
           )}`}</Typography>
           <Typography
             color='GrayText'

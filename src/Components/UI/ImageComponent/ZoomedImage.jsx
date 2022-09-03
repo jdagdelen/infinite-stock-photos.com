@@ -54,27 +54,15 @@ const ZoomedImage = ({ image, onClose }) => {
         animate='animate'
         exit='exit'
         sx={{
-          padding: '0 1em',
           width: '100%',
           height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
+          display: 'block',
+          backgroundImage: `url(${image})`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat no-repeat',
+          backgroundPosition: 'center center',
         }}
-      >
-        <img
-          src={image}
-          alt={image}
-          width='90%'
-          style={{
-            zIndex: 1000,
-            display: 'block',
-            maxHeight: '90%',
-            maxWidth: '90%',
-          }}
-        />
-      </Container>
+      />
     </Box>
   );
 };

@@ -7,6 +7,7 @@ import { CircularProgress, Stack } from '@mui/material';
 
 import FeedGrid from '../Components/UI/FeedGrid/FeedGrid';
 import useFeed from '../hooks/useFeed';
+import ScrollToTopButton from '../Components/UI/ScrollToTopButton/ScrollToTopButton';
 
 const Feed = () => {
   const [pageNo, setPageNo] = useState(1);
@@ -60,6 +61,7 @@ const Feed = () => {
           <CircularProgress />
         </Stack>
       )}
+      <ScrollToTopButton />
     </>
   );
 };

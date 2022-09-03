@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import useAuth from './useAuth';
+import moment from 'moment';
 
 export default function useGenerate() {
   const [width, setWidth] = useState(512);
@@ -41,27 +42,38 @@ export default function useGenerate() {
   }
 
   const generateImages = () => {
-    if (!isLoggedIn) navigate('/sign-in');
-    if (!!!user.role) navigate('/manage-account');
+    if (!isLoggedIn) {
+      navigate('/sign-in');
+      return;
+    }
+    if (!!!user.role) {
+      navigate('/manage-account');
+      return;
+    }
     setIsLoading(true);
     axios({
       method: 'GET',
-      url: `${process.env.REACT_APP_API_URL}/generate_fast`,
+      url: `${process.env.REACT_APP_API_URL}/generate`,
       params: {
         prompt: prompt,
+        generation_session: `${user.id}${moment().valueOf()}`,
         width,
         height,
-        prompt_weight: promptWeighting,
+        guidance_scale: promptWeighting,
       },
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        res.data.image_urls.forEach(async (i) => await waitForIt(i));
+        console.log(res.data);
+        const urls = res.data.modelOutputs.map((outputs) =>
+          outputs.map((o) => o.clip_image_embedding)
+        );
+        setImagesData(urls);
+        setIsLoading(true);
       })
       .catch((e) => {
-        console.log(e);
         setIsLoading(false);
       });
   };

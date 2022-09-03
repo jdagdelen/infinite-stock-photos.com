@@ -15,7 +15,6 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
-import { AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 
 import CustomSlider from '../Components/UI/CustomSlider/CustomSlider';
@@ -58,10 +57,91 @@ const GenerateImages = () => {
     if (width) setWidth(width);
     if (height) setHeight(height);
     if (promptScale) setPromptWeighting(promptScale);
-    if (!seed) return;
+    if (seed === '-1' || !seed) return;
     setUseSeed(true);
     setSeed(seed);
   }, []);
+
+  const controls = (
+    <>
+      <CustomSlider
+        min={512}
+        max={1024}
+        value={width}
+        step={8}
+        onChange={(e, v) =>
+          setWidth(
+            typeof e.target.value === 'string'
+              ? parseInt(e.target.value)
+              : e.target.value
+          )
+        }
+        title='Width'
+      />
+      <CustomSlider
+        min={512}
+        max={1024}
+        value={height}
+        step={8}
+        onChange={(e, v) =>
+          setHeight(
+            typeof e.target.value === 'string'
+              ? parseInt(e.target.value)
+              : e.target.value
+          )
+        }
+        title='Height'
+      />
+      <CustomSlider
+        min={1}
+        max={10}
+        value={promptWeighting}
+        step={0.1}
+        onChange={(e, v) =>
+          setPromptWeighting(
+            typeof e.target.value === 'string'
+              ? parseInt(e.target.value)
+              : e.target.value
+          )
+        }
+        title='Prompt Weighting'
+        description='Adjusts how much the model will try to match your prompt.'
+      />
+      <CustomSlider
+        min={1}
+        max={10}
+        value={noOfImages}
+        onChange={(e, v) =>
+          setNoOfImages(
+            typeof e.target.value === 'string'
+              ? parseInt(e.target.value)
+              : e.target.value
+          )
+        }
+        title='Number of images'
+      />
+      <Grid container>
+        <Grid item xs={9} flexGrow={2}>
+          <TextField
+            size='small'
+            color='secondary'
+            type='number'
+            fullWidth
+            value={seed}
+            onChange={({ target }) => setSeed(target.value)}
+            disabled={!useSeed}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Switch
+            color='secondary'
+            checked={useSeed}
+            onChange={({ target }) => setUseSeed(target.checked)}
+          />
+        </Grid>
+      </Grid>
+    </>
+  );
 
   const mobileDrawer = (
     <>
@@ -91,55 +171,7 @@ const GenerateImages = () => {
           sx={{ height: '100%', width: 250 }}
           padding='0 1em'
         >
-          <CustomSlider
-            min={50}
-            max={1024}
-            value={width}
-            onChange={(e, v) => setWidth(v)}
-            title='Width'
-          />
-          <CustomSlider
-            min={50}
-            max={1024}
-            value={height}
-            onChange={(e, v) => setHeight(v)}
-            title='Height'
-          />
-          <CustomSlider
-            min={1}
-            max={10}
-            value={promptWeighting}
-            onChange={(e, v) => setPromptWeighting(v)}
-            title='Prompt Weighting'
-            description='Adjusts how much the model will try to match your prompt.'
-          />
-          <CustomSlider
-            min={1}
-            max={10}
-            value={noOfImages}
-            onChange={(e, v) => setNoOfImages(v)}
-            title='Number of images'
-          />
-          <Grid container>
-            <Grid item flexGrow={1}>
-              <TextField
-                size='small'
-                color='secondary'
-                type='number'
-                fullWidth
-                value={seed}
-                onChange={({ target }) => setSeed(target.value)}
-                disabled={!useSeed}
-              />
-            </Grid>
-            <Grid item>
-              <Switch
-                color='secondary'
-                checked={useSeed}
-                onChange={({ target }) => setUseSeed(target.checked)}
-              />
-            </Grid>
-          </Grid>
+          {controls}
         </Stack>
       </Drawer>
     </>
@@ -166,27 +198,28 @@ const GenerateImages = () => {
         >
           <Grid
             container
+            gap='1em'
             sx={{ flexDirection: { xs: 'column-reverse', md: 'row' } }}
           >
             <Grid item xs={12} paddingBottom='1em'>
               <Grid
                 container
                 direction='row'
-                minHeight='79vh'
-                sx={{
-                  overflow: { xs: 'visible', md: 'auto' },
-                  maxHeight: { xs: 'auto', md: '79vh' },
-                }}
+                minHeight='75vh'
+                alignContent='flex-start'
               >
-                <AnimatePresence>
-                  {imagesData.length > 0
-                    ? imagesData.map((image, i) => (
-                        <ImageComponent key={i} image={image} />
-                      ))
-                    : Array.from(Array(noOfImages).keys()).map((_, i) => (
-                        <ImageComponent key={i} isLoading={isLoading} />
-                      ))}
-                </AnimatePresence>
+                {imagesData.length > 0
+                  ? imagesData.map((image, i) => (
+                      <ImageComponent
+                        key={i}
+                        image={`data:image/jpeg;base64,${btoa(
+                          String.fromCharCode.apply(null, new Uint8Array(image))
+                        )}`}
+                      />
+                    ))
+                  : Array.from(Array(noOfImages).keys()).map((_, i) => (
+                      <ImageComponent key={i} isLoading={isLoading} />
+                    ))}
               </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -195,7 +228,9 @@ const GenerateImages = () => {
                   container
                   direction='row'
                   alignItems='center'
-                  sx={{ padding: { xs: '0 0 1em 0', md: '0 1em 1em 0' } }}
+                  sx={{
+                    padding: { xs: '0 0 1em 0', md: '0 1em 1em 0' },
+                  }}
                 >
                   <Grid
                     item
@@ -245,82 +280,7 @@ const GenerateImages = () => {
 
         <Grid item xs={12} md={2} sx={{ display: { xs: 'none', md: 'block' } }}>
           <Stack direction='column' alignItems='center' sx={{ height: '100%' }}>
-            <CustomSlider
-              min={512}
-              max={1024}
-              value={width}
-              step={8}
-              onChange={(e, v) =>
-                setWidth(
-                  typeof e.target.value === 'string'
-                    ? parseInt(e.target.value)
-                    : e.target.value
-                )
-              }
-              title='Width'
-            />
-            <CustomSlider
-              min={512}
-              max={1024}
-              value={height}
-              step={8}
-              onChange={(e, v) =>
-                setHeight(
-                  typeof e.target.value === 'string'
-                    ? parseInt(e.target.value)
-                    : e.target.value
-                )
-              }
-              title='Height'
-            />
-            <CustomSlider
-              min={1}
-              max={10}
-              value={promptWeighting}
-              step={0.1}
-              onChange={(e, v) =>
-                setPromptWeighting(
-                  typeof e.target.value === 'string'
-                    ? parseInt(e.target.value)
-                    : e.target.value
-                )
-              }
-              title='Prompt Weighting'
-              description='Adjusts how much the model will try to match your prompt.'
-            />
-            <CustomSlider
-              min={1}
-              max={10}
-              value={noOfImages}
-              onChange={(e, v) =>
-                setNoOfImages(
-                  typeof e.target.value === 'string'
-                    ? parseInt(e.target.value)
-                    : e.target.value
-                )
-              }
-              title='Number of images'
-            />
-            <Grid container>
-              <Grid item xs={9} flexGrow={2}>
-                <TextField
-                  size='small'
-                  color='secondary'
-                  type='number'
-                  fullWidth
-                  value={seed}
-                  onChange={({ target }) => setSeed(target.value)}
-                  disabled={!useSeed}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <Switch
-                  color='secondary'
-                  checked={useSeed}
-                  onChange={({ target }) => setUseSeed(target.checked)}
-                />
-              </Grid>
-            </Grid>
+            {controls}
           </Stack>
         </Grid>
       </Grid>

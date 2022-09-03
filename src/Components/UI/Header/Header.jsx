@@ -77,13 +77,15 @@ const Header = (props) => {
         InfiniteStockPhotos.com
       </Typography>
       <Divider />
-      <Stack direction='column' alignItems='center' sx={{ padding: '1em 0' }}>
-        <Avatar
-          src={user.photoURL}
-          referrerPolicy='no-referrer'
-          sx={{ width: 75, height: 75 }}
-        />
-      </Stack>
+      {isLoggedIn && (
+        <Stack direction='column' alignItems='center' sx={{ padding: '1em 0' }}>
+          <Avatar
+            src={user.photoURL}
+            referrerPolicy='no-referrer'
+            sx={{ width: 75, height: 75 }}
+          />
+        </Stack>
+      )}
       <List>
         {links.map(({ title, path, icon }, i) => (
           <MobileNavigationLink key={i} icon={icon} path={path} title={title} />

@@ -43,13 +43,15 @@ const ImageComponent = ({
       flexGrow={1}
       sx={{
         position: 'relative',
-        flex: square && { xs: '100%', md: '50%', lg: '25%', xl: '20%' },
+        flex: square
+          ? { xs: '100%', md: '50%', lg: '25%', xl: '20%' }
+          : { xs: '100%', md: '1 0 20%' },
         maxWidth: square
           ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
-          : { xs: '100%', md: '60%' },
+          : { xs: '100%', md: '25vw' },
         maxHeight: square
           ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
-          : { xs: '100%', md: '60%' },
+          : { xs: '100%', md: '25vh' },
       }}
       onMouseOver={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
@@ -109,7 +111,7 @@ const ImageComponent = ({
         width='100%'
       />
       <AnimatePresence>
-        {showZoomed && (
+        {showZoomed && image && (
           <ZoomedImage
             image={image}
             onClose={() => setShowZoomed(!showZoomed)}

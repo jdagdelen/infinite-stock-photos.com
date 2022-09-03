@@ -35,6 +35,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({
+    id: '',
     name: '',
     email: '',
     photoURL: '',
@@ -55,6 +56,7 @@ export const AuthProvider = ({ children }) => {
         user.getIdTokenResult().then((idTokenResult) => {
           const role = idTokenResult.claims.stripeRole;
           setUser({
+            id: user.uid,
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
