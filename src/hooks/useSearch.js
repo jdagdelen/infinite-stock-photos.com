@@ -18,7 +18,7 @@ export default function useSearch(pageNo) {
       axios({
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}/search`,
-        params: { prompt },
+        params: { prompt, offset: pageNo },
       })
         .then((res) => {
           setIsLoading(false);

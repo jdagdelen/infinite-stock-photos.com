@@ -10,7 +10,7 @@ import useFeed from '../hooks/useFeed';
 
 const Feed = () => {
   const [pageNo, setPageNo] = useState(1);
-  const { isLoading, imagesData } = useFeed('test', pageNo);
+  const { isLoading, imagesData } = useFeed(pageNo);
   const [lastElement, setLastElement] = useState(null);
   const observer = useRef(
     new IntersectionObserver((entries) => {
@@ -41,11 +41,14 @@ const Feed = () => {
 
   return (
     <>
-      {imagesData.map((images, i) => (
+      {imagesData.map((data, i) => (
         <FeedGrid
           forwardedRef={imagesData.length === i + 1 ? setLastElement : null}
           key={i}
-          images={images}
+          generationDetails={data.generation_details}
+          generationPrompt={data.generation_prompt}
+          images={data.image_urls}
+          timestamp={data.timestamp}
         />
       ))}
       {isLoading && (

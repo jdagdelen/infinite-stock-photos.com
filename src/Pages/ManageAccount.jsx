@@ -58,7 +58,7 @@ const ManageAccount = () => {
                 color='secondary'
                 disabled={!user.role}
               >
-                Current Plan
+                {!user.role ? 'Current Plan' : 'Select Plan'}
               </Button>
             </Grid>
           </Grid>
@@ -75,7 +75,7 @@ const ManageAccount = () => {
                 color='secondary'
                 disabled={user.role === 'pro'}
               >
-                Select Plan
+                {user.role === 'pro' ? 'Current Plane' : 'Select Plan'}
               </Button>
             </Grid>
           </Grid>
@@ -92,7 +92,7 @@ const ManageAccount = () => {
                 color='secondary'
                 disabled={user.role === 'premium'}
               >
-                Select Plan
+                {user.role === 'premium' ? 'Current Plan' : 'Select Plan'}
               </Button>
             </Grid>
           </Grid>

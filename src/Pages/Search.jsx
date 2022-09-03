@@ -58,15 +58,15 @@ const Search = () => {
 
       <Grid container direction='row' flexWrap='wrap'>
         <AnimatePresence>
-          {imagesData.map((image, i) => (
+          {imagesData.map((data, i) => (
             <ImageComponent
               forwardedRef={imagesData.length === i + 1 ? setLastElement : null}
               key={i}
               index={i}
-              image={image.fields.image_file_name}
+              image={data.fields.image_url}
               description={
-                image.fields?.generation_prompt !== 'None' &&
-                image.fields?.generation_prompt
+                data.fields?.generation_prompt !== 'None' &&
+                data.fields?.generation_prompt
               }
               square
             />

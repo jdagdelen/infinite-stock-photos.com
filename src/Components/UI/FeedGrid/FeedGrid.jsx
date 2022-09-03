@@ -6,13 +6,31 @@ import { useNavigate } from 'react-router-dom';
 
 import ImageComponent from '../ImageComponent/ImageComponent';
 
-const FeedGrid = ({ images, forwardedRef }) => {
+const FeedGrid = ({
+  images,
+  forwardedRef,
+  generationDetails,
+  generationPrompt,
+  timestamp,
+}) => {
   const navigate = useNavigate();
-  const { prompt, promptScale, seed } = {
-    prompt:
-      'Side profile centered painted portrait, Imogen Poots as a paladin, blonde hair, Gloomhaven matte painting concept art, beautifully backlit, official fanart behance artstation by Jesper Ejsing, by RHADS and Makoto Shinkai and Lois van baarle and ilya kuvshinov and rossdraws',
-    seed: 2747573893,
-    promptScale: 7,
+  const { prompt, promptScale, seed, height, modelVersion, width } = {
+    prompt: generationPrompt,
+    seed: timestamp,
+    promptScale: generationDetails.prompt_strength,
+    width: generationDetails.width,
+    height: generationDetails.height,
+    modelVersion: generationDetails.model_version,
+  };
+  const tStamp = new Date(timestamp);
+  var options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    minute: 'numeric',
+    hour: 'numeric',
+    second: 'numeric',
   };
 
   return (
@@ -36,7 +54,7 @@ const FeedGrid = ({ images, forwardedRef }) => {
                 onClick={() =>
                   navigate({
                     pathname: '/generate',
-                    search: `?prompt=${prompt}&seed=${seed}&promptScale=${promptScale}`,
+                    search: `?prompt=${prompt}&seed=${seed}&promptScale=${promptScale}&width=${width}&height=${height}`,
                   })
                 }
               >
@@ -67,7 +85,10 @@ const FeedGrid = ({ images, forwardedRef }) => {
           >
             Created
           </Typography>
-          <Typography variant='subtitle1'>August 9, 22 at 8:57 AM</Typography>
+          <Typography variant='subtitle1'>{`${tStamp.toLocaleString(
+            'en-US',
+            options
+          )}`}</Typography>
           <Typography
             color='GrayText'
             variant='subtitle2'
@@ -75,19 +96,13 @@ const FeedGrid = ({ images, forwardedRef }) => {
           >
             Model
           </Typography>
-          <Typography variant='subtitle1'>stable-diffusion-v1</Typography>
+          <Typography variant='subtitle1'>{modelVersion}</Typography>
         </Grid>
         <Grid item sm={12} md={9}>
           <Grid container direction='row'>
             <AnimatePresence>
               {images.map((image, i) => (
-                <ImageComponent
-                  key={i}
-                  index={i}
-                  image={image.fields.image_file_name}
-                  description='Test Test Test Test Test Test'
-                  square
-                />
+                <ImageComponent key={i} image={image} square />
               ))}
             </AnimatePresence>
           </Grid>

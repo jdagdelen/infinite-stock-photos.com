@@ -45,19 +45,22 @@ const GenerateImages = () => {
     generateImages,
     imagesData,
   } = useGenerate();
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     document.title = 'Generate Images';
     const prompt = searchParams.get('prompt');
     const seed = searchParams.get('seed');
     const promptScale = searchParams.get('promptScale');
+    const width = searchParams.get('width');
+    const height = searchParams.get('height');
     if (prompt) setPrompt(prompt);
-    if (seed) {
-      setUseSeed(true);
-      setSeed(seed);
-    }
+    if (width) setWidth(width);
+    if (height) setHeight(height);
     if (promptScale) setPromptWeighting(promptScale);
+    if (!seed) return;
+    setUseSeed(true);
+    setSeed(seed);
   }, []);
 
   const mobileDrawer = (

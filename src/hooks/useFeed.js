@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-export default function useFeed(query, pageNo) {
+export default function useFeed(pageNo) {
   const [imagesData, setImagesData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -9,24 +9,19 @@ export default function useFeed(query, pageNo) {
     setIsLoading(true);
     axios({
       method: 'GET',
-      url: `${process.env.REACT_APP_API_URL}/search`,
-      params: { prompt: query },
+      url: `${process.env.REACT_APP_API_URL}/recent`,
+      params: { offset: pageNo },
     })
       .then((res) => {
         setIsLoading(false);
         setImagesData((prevImagesData) => {
-          return [
-            ...prevImagesData,
-            [...res.data.root.children.slice(0, 4)],
-            [...res.data.root.children.slice(4, 8)],
-            [...res.data.root.children.slice(8, 12)],
-            [...res.data.root.children.slice(12, 16)],
-          ];
+          return [...prevImagesData, ...res.data];
         });
       })
       .catch((e) => {
+        console.log(e);
         return;
       });
-  }, [query, pageNo]);
+  }, [pageNo]);
   return { imagesData, isLoading };
 }
