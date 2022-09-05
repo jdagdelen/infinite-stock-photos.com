@@ -10,7 +10,7 @@ export default function useFeed(pageNo) {
     axios({
       method: 'GET',
       url: `${process.env.REACT_APP_API_URL}/recent`,
-      params: { offset: pageNo },
+      params: { hits: 40, offset: (pageNo-1)*40 },
     })
       .then((res) => {
         setIsLoading(false);
