@@ -46,7 +46,7 @@ const FeedGrid = ({
                 onClick={() =>
                   navigate({
                     pathname: '/generate',
-                    search: `?prompt=${prompt}&seed=${seed}&promptScale=${promptScale}&width=${width}&height=${height}`,
+                    search: `?prompt=${prompt}&promptScale=${promptScale}&width=${width}&height=${height}`,
                   })
                 }
               >
