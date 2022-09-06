@@ -22,6 +22,7 @@ import {
 import {
   firebaseConfig,
   STRIPE_PREMIUM_PRICE,
+  STRIPE_CREDITS_PRICE,
   STRIPE_PUBLISHABLE_KEY,
 } from '../config';
 import authError from '../utils/auth-error';
@@ -80,6 +81,31 @@ export const AuthProvider = ({ children }) => {
       collection(db, 'customers', uid, 'checkout_sessions'),
       {
         price: STRIPE_PREMIUM_PRICE,
+        allow_promotion_codes: true,
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
+      }
+    );
+    onSnapshot(docRef, async (snap) => {
+      const { sessionId } = snap.data();
+      if (sessionId) {
+        const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
+        const stripe = await stripePromise;
+        stripe.redirectToCheckout({ sessionId });
+        setIsLoading(false);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (uid) purchase();
+  }, [uid]);
+
+  const purchase = async () => {
+    const docRef = await addDoc(
+      collection(db, 'customers', uid, 'checkout_sessions'),
+      {
+        price: STRIPE_CREDITS_PRICE,
         allow_promotion_codes: true,
         success_url: window.location.origin,
         cancel_url: window.location.origin,
