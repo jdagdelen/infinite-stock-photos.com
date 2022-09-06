@@ -15,10 +15,10 @@ import ScrollToTopButton from '../Components/UI/ScrollToTopButton/ScrollToTopBut
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const prompt = searchParams.get('prompt');
-  const [query, setQuery] = useState(prompt);
+  const [query, setQuery] = useState(prompt ?? '');
   const [pageNo, setPageNo] = useState(1);
   const [lastElement, setLastElement] = useState(null);
-  const { imagesData, isLoading } = useSearch(pageNo);
+  const { imagesData, isLoading } = useSearch(pageNo, setPageNo);
   const observer = useRef(
     new IntersectionObserver((entries) => {
       const first = entries[0];

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
-export default function useSearch(pageNo) {
+export default function useSearch(pageNo, setPageNo) {
   const [imagesData, setImagesData] = useState([]);
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -11,7 +11,10 @@ export default function useSearch(pageNo) {
   useEffect(() => {
     const prompt = searchParams.get('prompt');
     if (prompt) {
-      if (prompt !== prevPrompt.current) setImagesData([]);
+      if (prompt !== prevPrompt.current) {
+        setImagesData([]);
+        setPageNo(1);
+      }
       prevPrompt.current = prompt;
 
       setIsLoading(true);
