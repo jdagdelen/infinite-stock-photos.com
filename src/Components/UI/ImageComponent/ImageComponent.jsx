@@ -51,7 +51,7 @@ const ImageComponent = ({
           : { xs: '100%', md: '25vw' },
         maxHeight: square
           ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
-          : { xs: '100%', md: '25vh' },
+          : { xs: '100%' },
       }}
       onMouseOver={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}

@@ -21,26 +21,6 @@ export default function useGenerate() {
 
   const { token, isLoggedIn, user } = useAuth();
 
-  function UrlExists(url) {
-    const response = fetch(
-      `${process.env.REACT_APP_API_URL}/check_image?image=` + url
-    )
-      .then((response) => response.json())
-      .catch((e) => console.log(e));
-    return response;
-  }
-
-  async function waitForIt(url) {
-    while (!(await UrlExists(url))) {
-      await new Promise((r) => setTimeout(r, 10000));
-    }
-    setImagesData((prev) => {
-      return [...prev, url];
-    });
-    setIsLoading(false);
-    return url;
-  }
-
   const generateImages = () => {
     if (!isLoggedIn) {
       navigate('/sign-in');
@@ -51,34 +31,31 @@ export default function useGenerate() {
       return;
     }
     setIsLoading(true);
-
-    axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_API_URL}/generate`,
-      params: {
-        prompt: prompt,
-        generation_session: `${user.id}${moment().valueOf()}`,
-        width,
-        height,
-        guidance_scale: promptWeighting,
-        seed: useSeed ? seed : -1,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        console.log(res.data.modelOutputs);
-        const urls = res.data.modelOutputs.map((outputs) =>
-          outputs.map((o) => o.result.variants[0])
-        );
-        urls.map(waitForIt);
+    for (let i = 1; i <= noOfImages; i++) {
+      axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_API_URL}/generate`,
+        params: {
+          prompt: prompt,
+          generation_session: `${user.id}${moment().valueOf()}`,
+          width,
+          height,
+          guidance_scale: promptWeighting,
+          seed: useSeed ? seed : -1,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch((e) => {
-        setIsLoading(false);
-      });
+        .then((res) => {
+          setImagesData((prev) => {
+            return [...prev, res.data];
+          });
+          if (i === noOfImages) setIsLoading(false);
+        })
+        .catch((e) => {});
+    }
   };
-
   return {
     width,
     setWidth,

@@ -88,6 +88,17 @@ const LoginForm = () => {
         </CardContent>
         <Button
           variant='contained'
+          color='secondary'
+          fullWidth
+          sx={{ borderRadius: 0 }}
+          disableElevation
+          type='submit'
+        >
+          Sign In
+        </Button>
+        <Divider />
+        <Button
+          variant='contained'
           color='error'
           fullWidth
           sx={{ borderRadius: 0 }}
@@ -100,17 +111,7 @@ const LoginForm = () => {
             );
           }}
         >
-          Sign In
-        </Button>
-        <Button
-          variant='contained'
-          color='secondary'
-          fullWidth
-          sx={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
-          disableElevation
-          type='submit'
-        >
-          Sign In
+          Sign In With Google
         </Button>
       </Card>
     </form>

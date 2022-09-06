@@ -210,10 +210,7 @@ const GenerateImages = () => {
               >
                 {imagesData.length > 0
                   ? imagesData.map((image, i) => (
-                      <ImageComponent
-                        key={i}
-                        image={`data:image/png:${image}`}
-                      />
+                      <ImageComponent key={i} image={image} />
                     ))
                   : Array.from(Array(noOfImages).keys()).map((_, i) => (
                       <ImageComponent key={i} isLoading={isLoading} />
