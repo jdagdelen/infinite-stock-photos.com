@@ -104,8 +104,8 @@ const GenerateImages = () => {
               : e.target.value
           )
         }
-        title='Prompt Weighting'
-        description='Adjusts how much the model will try to match your prompt.'
+        title='Prompt Strength'
+        description='Adjusts how closely the model will try to match your prompt.'
       />
       <CustomSlider
         min={1}
