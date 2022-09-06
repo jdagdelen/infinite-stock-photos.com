@@ -82,7 +82,7 @@ const GenerateImages = () => {
         min={512}
         max={1024}
         value={height}
-        step={8}
+        step={64}
         onChange={(e, v) =>
           setHeight(
             typeof e.target.value === 'string'
