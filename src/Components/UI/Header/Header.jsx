@@ -129,7 +129,7 @@ const Header = (props) => {
         position: 'relative', 
         boxShadow: 'none', 
         zIndex: 500, 
-        'background-image': `linear-gradient(to right, #f9c449, #f50057)`}}
+        backgroundImage: `linear-gradient(to right, #f9c449, #f50057)`}}
     >
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <IconButton
