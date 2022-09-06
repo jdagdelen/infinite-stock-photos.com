@@ -31,13 +31,14 @@ export default function useGenerate() {
       return;
     }
     setIsLoading(true);
+    var timestamp = moment().valueOf();
     for (let i = 1; i <= noOfImages; i++) {
       axios({
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}/generate`,
         params: {
           prompt: prompt,
-          generation_session: `${user.id}${moment().valueOf()}`,
+          generation_session: timestamp,
           width,
           height,
           guidance_scale: promptWeighting,

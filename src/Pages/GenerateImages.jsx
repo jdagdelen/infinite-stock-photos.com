@@ -68,7 +68,7 @@ const GenerateImages = () => {
         min={512}
         max={1024}
         value={width}
-        step={8}
+        step={64}
         onChange={(e, v) =>
           setWidth(
             typeof e.target.value === 'string'
