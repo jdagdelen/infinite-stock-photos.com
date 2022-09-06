@@ -51,6 +51,7 @@ export default function useGenerate() {
       return;
     }
     setIsLoading(true);
+
     axios({
       method: 'GET',
       url: `${process.env.REACT_APP_API_URL}/generate`,
@@ -60,18 +61,18 @@ export default function useGenerate() {
         width,
         height,
         guidance_scale: promptWeighting,
+        seed: useSeed ? seed : -1,
       },
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data.modelOutputs);
         const urls = res.data.modelOutputs.map((outputs) =>
-          outputs.map((o) => o.clip_image_embedding)
+          outputs.map((o) => o.result.variants[0])
         );
-        setImagesData(urls);
-        setIsLoading(true);
+        urls.map(waitForIt);
       })
       .catch((e) => {
         setIsLoading(false);

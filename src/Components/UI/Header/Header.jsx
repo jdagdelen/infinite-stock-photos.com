@@ -202,7 +202,7 @@ const Header = (props) => {
                     {user.name ?? user.email}
                   </Typography>
                   <Typography marginY='0.5em'>
-                    {user.role === 'pro'
+                    {user.role && user.role === 'pro'
                       ? 'Credits: 400'
                       : 'Credits: Unlimited'}
                   </Typography>
