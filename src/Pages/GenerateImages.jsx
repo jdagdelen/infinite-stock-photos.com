@@ -212,9 +212,7 @@ const GenerateImages = () => {
                   ? imagesData.map((image, i) => (
                       <ImageComponent
                         key={i}
-                        image={`data:image/jpeg;base64,${btoa(
-                          String.fromCharCode.apply(null, new Uint8Array(image))
-                        )}`}
+                        image={image}
                       />
                     ))
                   : Array.from(Array(noOfImages).keys()).map((_, i) => (

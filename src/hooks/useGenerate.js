@@ -67,17 +67,14 @@ export default function useGenerate() {
     })
       .then((res) => {
         console.log(res.data);
-        const urls = res.data.modelOutputs.map((outputs) =>
-          outputs.map((o) => o.clip_image_embedding)
-        );
-        setImagesData(urls);
-        setIsLoading(true);
+        const url = res.data;
+        setImagesData([url]);
+        setIsLoading(false);
       })
       .catch((e) => {
         setIsLoading(false);
       });
   };
-
   return {
     width,
     setWidth,
