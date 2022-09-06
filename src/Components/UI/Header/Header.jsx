@@ -125,7 +125,11 @@ const Header = (props) => {
     <AppBar
       component='nav'
       color='secondary'
-      sx={{ position: 'relative', boxShadow: 'none', zIndex: 500 }}
+      sx={{ 
+        position: 'relative', 
+        boxShadow: 'none', 
+        zIndex: 500, 
+        'background-image': `linear-gradient(to right, #f9c449, #f50057)`}}
     >
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <IconButton

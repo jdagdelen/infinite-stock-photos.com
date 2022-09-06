@@ -9,9 +9,27 @@ import ManageAccount from './Pages/ManageAccount';
 import Register from './Pages/Register';
 import Search from './Pages/Search';
 import SignIn from './Pages/SignIn';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+const theme = createTheme(
+  {
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#f1f1f1',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+    background: {
+      default: '#ffffff',
+    },
+  },
+})
 
 function App() {
   return (
+    <ThemeProvider theme={theme}>
     <AuthProvider>
       <BrowserRouter>
         <div style={{ overflow: 'hidden' }}>
@@ -28,6 +46,7 @@ function App() {
         </div>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 
