@@ -31,18 +31,18 @@ export default function useGenerate() {
       return;
     }
     setIsLoading(true);
-    var timestamp = moment().valueOf();
     for (let i = 1; i <= noOfImages; i++) {
+      console.log(useSeed, seed, noOfImages);
       axios({
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}/generate`,
         params: {
           prompt: prompt,
-          generation_session: timestamp,
+          generation_session: `${user.id}${moment().valueOf()}`,
           width,
           height,
           guidance_scale: promptWeighting,
-          seed: useSeed ? seed : -1,
+          seed: useSeed && seed ? seed : -1,
         },
         headers: {
           Authorization: `Bearer ${token}`,
