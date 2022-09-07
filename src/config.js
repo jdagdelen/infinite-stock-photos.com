@@ -9,5 +9,5 @@ export const firebaseConfig = {
 };
 
 export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
-export const STRIPE_PREMIUM_PRICE = process.env.REACT_APP_STRIPE_PREMIUM_PRICE;
-export const STRIPE_CREDITS_PRICE = process.env.REACT_APP_STRIPE_CREDITS_PRICE;
+export const STRIPE_PREMIUM_PRICE = process.env.STRIPE_PREMIUM_PRICE;
+export const STRIPE_CREDITS_PRICE = process.env.STRIPE_CREDITS_PRICE;

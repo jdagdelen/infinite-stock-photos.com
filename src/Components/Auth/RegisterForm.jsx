@@ -131,7 +131,7 @@ const RegisterForm = () => {
             type='button'
             onClick={() => firebaseGoogleSignIn('register')}
           >
-            Sign In
+            Use Google Account
           </Button>
           <Button
             variant='contained'
@@ -141,7 +141,7 @@ const RegisterForm = () => {
             disableElevation
             type='submit'
           >
-            Sign In
+            Sign Up
           </Button>
         </Card>
       </form>

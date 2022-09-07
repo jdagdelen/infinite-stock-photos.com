@@ -73,9 +73,9 @@ const ManageAccount = () => {
               <Button
                 variant='contained'
                 color='secondary'
-                disabled={user.role === 'pro'}
+                disabled={user.role === 'premium'}
               >
-                {user.role === 'pro' ? 'Current Plane' : 'Select Plan'}
+                {user.role === 'premium' ? 'Unlimited' : 'Purchase Credits'}
               </Button>
             </Grid>
           </Grid>

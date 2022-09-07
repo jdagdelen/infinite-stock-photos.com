@@ -33,11 +33,12 @@ import { useNavigate } from 'react-router-dom';
 import NavigationLink from './NavigationLink';
 import MobileNavigationLink from './MobileNavigationLink';
 import useAuth from '../../../hooks/useAuth';
+import { red } from '@mui/material/colors';
 
 const drawerWidth = 240;
 
 const Header = (props) => {
-  const { isLoggedIn, logout, user } = useAuth();
+  const { isLoggedIn, logout, user, token } = useAuth();
   const navigate = useNavigate();
 
   const links = isLoggedIn
@@ -206,9 +207,9 @@ const Header = (props) => {
                     {user.name ?? user.email}
                   </Typography>
                   <Typography marginY='0.5em'>
-                    {user.role && user.role === 'pro'
-                      ? 'Credits: 400'
-                      : 'Credits: Unlimited'}
+                    {user.role && user.role === 'premium' ? 
+                    'Credits: Unlimited': 
+                    'Credits: 400'}
                   </Typography>
                 </Stack>
                 <MenuItem onClick={() => navigate('/manage-account')}>
