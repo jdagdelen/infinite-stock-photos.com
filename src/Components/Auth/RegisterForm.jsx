@@ -58,6 +58,7 @@ const RegisterForm = () => {
         onSubmit={(e) => {
           e.preventDefault();
           register(email, password);
+          navigate('/');
         }}
       >
         <Card sx={{ position: 'relative' }}>

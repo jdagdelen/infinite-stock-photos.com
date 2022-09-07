@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { createContext, useEffect, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+
 // third-party
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -14,16 +14,10 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore,
-  collection,
-  addDoc,
-  onSnapshot,
 } from 'firebase/firestore';
 
 import {
   firebaseConfig,
-  STRIPE_PREMIUM_PRICE,
-  STRIPE_CREDITS_PRICE,
-  STRIPE_PUBLISHABLE_KEY,
 } from '../config';
 import authError from '../utils/auth-error';
 
@@ -43,10 +37,10 @@ export const AuthProvider = ({ children }) => {
     role: '',
   });
   const [token, setToken] = useState(null);
-  const [uid, setUid] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [uid, setUid] = useState('');
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -71,56 +65,6 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (uid) subscribe();
-  }, [uid]);
-
-  const subscribe = async () => {
-    const docRef = await addDoc(
-      collection(db, 'customers', uid, 'checkout_sessions'),
-      {
-        price: STRIPE_PREMIUM_PRICE,
-        allow_promotion_codes: true,
-        success_url: window.location.origin,
-        cancel_url: window.location.origin,
-      }
-    );
-    onSnapshot(docRef, async (snap) => {
-      const { sessionId } = snap.data();
-      if (sessionId) {
-        const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
-        const stripe = await stripePromise;
-        stripe.redirectToCheckout({ sessionId });
-        setIsLoading(false);
-      }
-    });
-  };
-
-  useEffect(() => {
-    if (uid) purchase();
-  }, [uid]);
-
-  const purchase = async () => {
-    const docRef = await addDoc(
-      collection(db, 'customers', uid, 'checkout_sessions'),
-      {
-        price: STRIPE_CREDITS_PRICE,
-        allow_promotion_codes: true,
-        success_url: window.location.origin,
-        cancel_url: window.location.origin,
-      }
-    );
-    onSnapshot(docRef, async (snap) => {
-      const { sessionId } = snap.data();
-      if (sessionId) {
-        const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
-        const stripe = await stripePromise;
-        stripe.redirectToCheckout({ sessionId });
-        setIsLoading(false);
-      }
-    });
-  };
 
   const login = async (email, password, after) => {
     setIsLoading(true);
@@ -203,6 +147,7 @@ export const AuthProvider = ({ children }) => {
         setShowSuccessModal,
         isLoading,
         resetPassword,
+        db
       }}
     >
       {children}

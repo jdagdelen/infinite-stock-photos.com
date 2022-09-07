@@ -20,6 +20,7 @@ import userFeatures from '../utils/user-features';
 import capitalizeFirstLetter from '../utils/capitalize-first-letter';
 import useAuth from '../hooks/useAuth';
 import AuthGuard from '../utils/AuthGuard';
+import useStripe from '../hooks/useStripe';
 
 const ManageAccount = () => {
   useEffect(() => {
@@ -33,6 +34,7 @@ const ManageAccount = () => {
   const { features, upgradeText } = userFeatures(
     user.role ? user.role : 'basic'
   );
+  const {purchase, subscribe} = useStripe();
 
   const planModal = (
     <Modal
@@ -49,8 +51,6 @@ const ManageAccount = () => {
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
               <Typography>Basic (Free):</Typography>
-              <Typography>- Add favorites from library</Typography>
-              <Typography>- No generation credits</Typography>
             </Grid>
             <Grid item>
               <Button
@@ -66,14 +66,14 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Pro (4.99$):</Typography>
-              <Typography>- 400 generations/month</Typography>
+              <Typography>Buy 400 Credits (4.99$):</Typography>
             </Grid>
             <Grid item>
               <Button
                 variant='contained'
                 color='secondary'
                 disabled={user.role === 'premium'}
+                onClick={purchase}
               >
                 {user.role === 'premium' ? 'Unlimited' : 'Purchase Credits'}
               </Button>
@@ -83,14 +83,14 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Premium (14.99$):</Typography>
-              <Typography>- Unlimited generations/month</Typography>
+              <Typography>Unlimited (14.99$):</Typography>
             </Grid>
             <Grid item>
               <Button
                 variant='contained'
                 color='secondary'
                 disabled={user.role === 'premium'}
+                onClick={subscribe}
               >
                 {user.role === 'premium' ? 'Current Plan' : 'Select Plan'}
               </Button>
