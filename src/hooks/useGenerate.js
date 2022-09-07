@@ -52,9 +52,9 @@ export default function useGenerate() {
           setImagesData((prev) => {
             return [...prev, res.data];
           });
-          if (i === noOfImages) setIsLoading(false);
+          if (i === noOfImages - 1) setIsLoading(false);
         })
-        .catch((e) => {});
+        .catch((e) => {setIsLoading(false)});
     }
   };
   return {
