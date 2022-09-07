@@ -24,6 +24,9 @@ const ImageComponent = ({
   const [showInfo, setShowInfo] = useState(false);
   const [showZoomed, setShowZoomed] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState();
   const info = {
     initial: {
       opacity: 0,
@@ -78,7 +81,14 @@ const ImageComponent = ({
               {description && <Typography>{description}</Typography>}
 
               <Stack direction='row' justifyContent='space-between'>
-                <SocialShare />
+                <SocialShare
+                  anchorEl={anchorEl}
+                  setAnchorEl={setAnchorEl}
+                  open={open}
+                  setOpen={setOpen}
+                  placement={placement}
+                  setPlacement={setPlacement}
+                />
                 <Stack direction='row'>
                   <IconButton>
                     <FavoriteBorder htmlColor='white' />
