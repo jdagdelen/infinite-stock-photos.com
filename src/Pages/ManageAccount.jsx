@@ -174,6 +174,9 @@ const ManageAccount = () => {
           <AnimatePresence>
             {showChangePasswordModal && passwordModal}
           </AnimatePresence>
+          <Typography color='GrayText' marginTop='1em'>
+              Contact <b>help@infinitestockphotos.com</b> for any other questions.
+          </Typography>
         </Container>
       </AuthGuard>
     </Box>
