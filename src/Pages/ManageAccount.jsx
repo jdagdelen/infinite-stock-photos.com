@@ -67,7 +67,7 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Buy 400 Credits (4.99$):</Typography>
+              <Typography>Buy 400 Credits ($4.99):</Typography>
             </Grid>
             <Grid item>
               <Button
@@ -92,7 +92,7 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Unlimited (14.99$):</Typography>
+              <Typography>Unlimited ($14.99/month):</Typography>
             </Grid>
             <Grid item>
               <Button
@@ -171,7 +171,7 @@ const ManageAccount = () => {
               color='secondary'
               onClick={() => setShowChangePlanModal(!showChangePlanModal)}
             >
-              Change Plan
+              Buy Credits or Manage Subscription
             </Button>
             <Typography color='GrayText' marginTop='1em'>
               Security and Password

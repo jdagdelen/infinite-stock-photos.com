@@ -1,14 +1,9 @@
 export default function userFeatures(level) {
   if (level === 'basic')
     return {
-      features: 'Allows you to search the library and save favorites.',
+      features: 'Allows you to search the library and save favorites. 40 free credits when you sign up.',
       upgradeText:
-        'Upgrade to a paid account to generate your own images with AI',
-    };
-  else if (level === 'pro')
-    return {
-      features: '400 generations/month.',
-      upgradeText: 'Upgrade to get unlimited generations',
+        'Purchase more credits up upgrade to unlimited below.',
     };
   else if (level === 'premium')
     return { features: 'You have unlimited generations.', upgradeText: '' };
