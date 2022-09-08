@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useCredits from '../hooks/useCredits';
 
 import useAuth from './useAuth';
 import moment from 'moment';
@@ -22,13 +23,14 @@ export default function useGenerate() {
   const navigate = useNavigate();
 
   const { token, isLoggedIn, user } = useAuth();
+  const credits = useCredits().creditsRemaining;
 
   const generateImages = async () => {
     if (!isLoggedIn) {
       navigate('/sign-in');
       return;
     }
-    if (!!!user.role) {
+    if (user.role !== 'premium' && credits < noOfImages) {
       navigate('/manage-account');
       return;
     }

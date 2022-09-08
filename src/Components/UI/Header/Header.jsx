@@ -33,13 +33,14 @@ import { useNavigate } from 'react-router-dom';
 import NavigationLink from './NavigationLink';
 import MobileNavigationLink from './MobileNavigationLink';
 import useAuth from '../../../hooks/useAuth';
-import { red } from '@mui/material/colors';
+import useCredits from '../../../hooks/useCredits';
 
 const drawerWidth = 240;
 
 const Header = (props) => {
-  const { isLoggedIn, logout, user, token } = useAuth();
+  const { isLoggedIn, logout, user } = useAuth();
   const navigate = useNavigate();
+  const credits = useCredits().creditsRemaining;
 
   const links = isLoggedIn
     ? [
@@ -126,11 +127,12 @@ const Header = (props) => {
     <AppBar
       component='nav'
       color='secondary'
-      sx={{ 
-        position: 'relative', 
-        boxShadow: 'none', 
-        zIndex: 500, 
-        backgroundImage: `linear-gradient(to right, #f9c449, #f50057)`}}
+      sx={{
+        position: 'relative',
+        boxShadow: 'none',
+        zIndex: 500,
+        backgroundImage: `linear-gradient(to right, #f9c449, #f50057)`,
+      }}
     >
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <IconButton
@@ -207,9 +209,9 @@ const Header = (props) => {
                     {user.name ?? user.email}
                   </Typography>
                   <Typography marginY='0.5em'>
-                    {user.role && user.role === 'premium' ? 
-                    'Credits: Unlimited': 
-                    'Credits: 400'}
+                    {user.role && user.role === 'premium'
+                      ? 'Credits: Unlimited'
+                      : `Credits: ${credits}`}
                   </Typography>
                 </Stack>
                 <MenuItem onClick={() => navigate('/manage-account')}>

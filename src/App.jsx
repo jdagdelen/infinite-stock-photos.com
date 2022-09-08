@@ -1,6 +1,6 @@
+import { useEffect } from 'react';
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import Header from './Components/UI/Header/Header';
 import { AuthProvider } from './contexts/AuthContext';
 import Feed from './Pages/Feed';
@@ -16,7 +16,7 @@ const theme = createTheme(
   palette: {
     type: 'light',
     primary: {
-      main: '#f1f1f1',
+      main: '#f9c449',
     },
     secondary: {
       main: '#f50057',
@@ -28,6 +28,11 @@ const theme = createTheme(
 })
 
 function App() {
+
+  useEffect(() => {
+    document.title = "Infinite Stock Photos";  
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
     <AuthProvider>

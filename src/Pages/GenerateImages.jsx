@@ -262,7 +262,9 @@ const GenerateImages = () => {
                         marginTop: { xs: '1em', md: 0 },
                         transition: 'all 0.1s ease',
                       }}
-                      onClick={generateImages}
+                      onClick={
+                        !prompt ? () => {} : generateImages
+                      }
                       disabled={isLoading}
                     >
                       {isLoading ? (

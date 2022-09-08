@@ -20,6 +20,7 @@ import userFeatures from '../utils/user-features';
 import capitalizeFirstLetter from '../utils/capitalize-first-letter';
 import useAuth from '../hooks/useAuth';
 import AuthGuard from '../utils/AuthGuard';
+import useStripe from '../hooks/useStripe';
 
 const ManageAccount = () => {
   useEffect(() => {
@@ -28,11 +29,13 @@ const ManageAccount = () => {
 
   const [showChangePlanModal, setShowChangePlanModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { user, resetPassword } = useAuth();
   const { features, upgradeText } = userFeatures(
     user.role ? user.role : 'basic'
   );
+  const {purchase, subscribe} = useStripe();
 
   const planModal = (
     <Modal
@@ -49,8 +52,6 @@ const ManageAccount = () => {
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
               <Typography>Basic (Free):</Typography>
-              <Typography>- Add favorites from library</Typography>
-              <Typography>- No generation credits</Typography>
             </Grid>
             <Grid item>
               <Button
@@ -66,14 +67,22 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Pro (4.99$):</Typography>
-              <Typography>- 400 generations/month</Typography>
+              <Typography>Buy 400 Credits (4.99$):</Typography>
             </Grid>
             <Grid item>
               <Button
                 variant='contained'
                 color='secondary'
                 disabled={user.role === 'premium'}
+                onClick={async () => {
+                  setShowLoadingModal(true);
+                  try {
+                    await purchase();
+                  } catch (error) {
+                    setShowLoadingModal(false);
+                  }
+                }
+                  }
               >
                 {user.role === 'premium' ? 'Unlimited' : 'Purchase Credits'}
               </Button>
@@ -83,14 +92,22 @@ const ManageAccount = () => {
         <Grid item xs={12} md={4}>
           <Grid container direction='column' height='100%'>
             <Grid item flexGrow={1}>
-              <Typography>Premium (14.99$):</Typography>
-              <Typography>- Unlimited generations/month</Typography>
+              <Typography>Unlimited (14.99$):</Typography>
             </Grid>
             <Grid item>
               <Button
                 variant='contained'
                 color='secondary'
                 disabled={user.role === 'premium'}
+                onClick={async () => {
+                  setShowLoadingModal(true);
+                  try {
+                    await subscribe();
+                  } catch (error) {
+                    setShowLoadingModal(false);
+                  }
+                }
+                  }
               >
                 {user.role === 'premium' ? 'Current Plan' : 'Select Plan'}
               </Button>
@@ -112,6 +129,12 @@ const ManageAccount = () => {
       <Typography align='center'>
         Check your email for a link to change your password.
       </Typography>
+    </Modal>
+  );
+
+  const loadingModal = (
+    <Modal key='loadingModal' onClose={() => {}}>
+      <LinearProgress />
     </Modal>
   );
 
@@ -174,6 +197,12 @@ const ManageAccount = () => {
           <AnimatePresence>
             {showChangePasswordModal && passwordModal}
           </AnimatePresence>
+          <AnimatePresence>
+            {showLoadingModal && loadingModal}
+          </AnimatePresence>
+          <Typography color='GrayText' marginTop='1em'>
+              Contact <b>help@infinitestockphotos.com</b> for any other questions.
+          </Typography>
         </Container>
       </AuthGuard>
     </Box>
