@@ -34,12 +34,14 @@ import NavigationLink from './NavigationLink';
 import MobileNavigationLink from './MobileNavigationLink';
 import useAuth from '../../../hooks/useAuth';
 import { red } from '@mui/material/colors';
+import useCredits from '../../../hooks/useCredits'
 
 const drawerWidth = 240;
 
 const Header = (props) => {
   const { isLoggedIn, logout, user, token } = useAuth();
   const navigate = useNavigate();
+  const credits = useCredits().creditsRemaining;
 
   const links = isLoggedIn
     ? [
@@ -209,7 +211,7 @@ const Header = (props) => {
                   <Typography marginY='0.5em'>
                     {user.role && user.role === 'premium' ? 
                     'Credits: Unlimited': 
-                    'Credits: 400'}
+                    `Credits: ${credits}`}
                   </Typography>
                 </Stack>
                 <MenuItem onClick={() => navigate('/manage-account')}>
