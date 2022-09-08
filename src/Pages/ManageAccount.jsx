@@ -156,14 +156,14 @@ const ManageAccount = () => {
             <Typography color='GrayText' variant='subtitle2'>
               {user.email}
             </Typography>
-            <Typography color='GrayText'>
+            <Typography color='BlackText'>
               Membership Level:{' '}
               <b>{user.role ? capitalizeFirstLetter(user.role) : 'Basic'}</b>
             </Typography>
             <Typography color='GrayText' variant='subtitle2'>
               {features}
             </Typography>
-            <Typography color='primary' variant='subtitle2' gutterBottom>
+            <Typography color='secondary' variant='subtitle2' gutterBottom>
               {upgradeText}
             </Typography>
             <Button
