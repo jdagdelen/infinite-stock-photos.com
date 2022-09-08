@@ -2,9 +2,9 @@ import { useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useCredits from '../hooks/useCredits';
-
+import hash from 'object-hash';
 import useAuth from './useAuth';
-import moment from 'moment';
+
 
 export default function useGenerate() {
   const [width, setWidth] = useState(512);
@@ -41,7 +41,7 @@ export default function useGenerate() {
 
     setImagesData(newArray);
     index.current = 0;
-    const generation_session = `${user.id}${moment().valueOf()}`;
+    const generation_session =`${user.id}${hash(prompt)}`;
     while (index.current < noOfImages) {
       try {
         const { data } = await axios({
