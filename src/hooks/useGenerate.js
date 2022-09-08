@@ -46,7 +46,7 @@ export default function useGenerate() {
       try {
         const { data } = await axios({
           method: 'GET',
-          url: `${process.env.REACT_APP_API_URL}/generate_fake`,
+          url: `${process.env.REACT_APP_API_URL}/generate`,
           params: {
             prompt: prompt,
             generation_session,
