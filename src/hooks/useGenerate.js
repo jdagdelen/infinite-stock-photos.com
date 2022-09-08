@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useCredits from '../hooks/useCredits';
-
+import hash from 'object-hash';
 import useAuth from './useAuth';
-import moment from 'moment';
+
 
 export default function useGenerate() {
   const [width, setWidth] = useState(512);
@@ -17,13 +17,16 @@ export default function useGenerate() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [imagesData, setImagesData] = useState([]);
-  const credits = useCredits().creditsRemaining;
+  const [requiredPrompt, setRequiredPrompt] = useState(false);
+  const shownIndex = useRef(0);
+  const index = useRef(0);
 
   const navigate = useNavigate();
 
   const { token, isLoggedIn, user } = useAuth();
+  const credits = useCredits().creditsRemaining;
 
-  const generateImages = () => {
+  const generateImages = async () => {
     if (!isLoggedIn) {
       navigate('/sign-in');
       return;
@@ -33,32 +36,42 @@ export default function useGenerate() {
       return;
     }
     setIsLoading(true);
-    var generation_session =`${user.id}${moment().valueOf()}`;
-    for (let i = 0; i <= noOfImages - 1; i++) {
-      axios({
-        method: 'GET',
-        url: `${process.env.REACT_APP_API_URL}/generate`,
-        params: {
-          prompt: prompt,
-          generation_session: generation_session,
-          width,
-          height,
-          guidance_scale: promptWeighting,
-          seed: useSeed && seed ? seed + i : Math.floor(Math.random() * 1000000000),
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          setImagesData((prev) => {
-            return [...prev, res.data];
-          });
-          if (i === noOfImages - 1) setIsLoading(false);
-        })
-        .catch((e) => {setIsLoading(false)});
+    const newArray = [...imagesData];
+    newArray.push(...Array.from(Array(noOfImages).keys()));
+
+    setImagesData(newArray);
+    index.current = 0;
+    const generation_session =`${user.id}${hash(prompt)}`;
+    while (index.current < noOfImages) {
+      try {
+        const { data } = await axios({
+          method: 'GET',
+          url: `${process.env.REACT_APP_API_URL}/generate_fake`,
+          params: {
+            prompt: prompt,
+            generation_session,
+            width,
+            height,
+            guidance_scale: promptWeighting,
+            seed:
+              useSeed && seed
+                ? seed + shownIndex.current
+                : Math.floor(Math.random() * 1000000000),
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        newArray[shownIndex.current] = data;
+        if (index === noOfImages - 1) setIsLoading(false);
+      } catch (e) {}
+      shownIndex.current++;
+      index.current++;
     }
+    setImagesData(newArray);
+    setIsLoading(false);
   };
+
   return {
     width,
     setWidth,
@@ -79,5 +92,7 @@ export default function useGenerate() {
     setIsDrawerOpen,
     generateImages,
     imagesData,
+    requiredPrompt,
+    setRequiredPrompt,
   };
 }

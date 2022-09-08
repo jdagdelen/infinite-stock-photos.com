@@ -27,6 +27,13 @@ const ImageComponent = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState();
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
   const info = {
     initial: {
       opacity: 0,
@@ -53,11 +60,16 @@ const ImageComponent = ({
           ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
           : { xs: '100%', md: '25vw' },
         maxHeight: square
-          ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
+          ? height === 0
+            ? { sm: '100%', md: '50%', lg: '25%', xl: '20%' }
+            : height
           : { xs: '100%' },
       }}
       onMouseOver={() => setShowInfo(true)}
-      onMouseLeave={() => setShowInfo(false)}
+      onMouseLeave={() => {
+        setShowInfo(false);
+        setOpen(false);
+      }}
     >
       <AnimatePresence>
         {showInfo && image && isLoaded && (
@@ -72,7 +84,7 @@ const ImageComponent = ({
               padding: '0.4em',
               position: 'absolute',
               top: 'auto',
-              bottom: 7,
+              bottom: 0,
               width: '100%',
               color: 'white',
             }}
@@ -88,6 +100,7 @@ const ImageComponent = ({
                   setOpen={setOpen}
                   placement={placement}
                   setPlacement={setPlacement}
+                  handleClick={handleClick}
                 />
                 <Stack direction='row'>
                   <IconButton>
@@ -115,9 +128,12 @@ const ImageComponent = ({
       )}
       <img
         src={image && isLoaded ? image : PlaceHolderImage}
-        alt={image}
+        alt=''
         onClick={() => isLoaded && setShowZoomed(!showZoomed)}
-        onLoad={() => setIsLoaded(true)}
+        onLoad={({ target }) => {
+          setHeight(target.height);
+          setIsLoaded(true);
+        }}
         width='100%'
       />
       <AnimatePresence>

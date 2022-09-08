@@ -43,6 +43,8 @@ const GenerateImages = () => {
     setPrompt,
     generateImages,
     imagesData,
+    requiredPrompt,
+    setRequiredPrompt,
   } = useGenerate();
   const [searchParams] = useSearchParams();
 
@@ -54,9 +56,9 @@ const GenerateImages = () => {
     const width = searchParams.get('width');
     const height = searchParams.get('height');
     if (prompt) setPrompt(prompt);
-    if (width) setWidth(width);
-    if (height) setHeight(height);
-    if (promptScale) setPromptWeighting(promptScale);
+    if (width) setWidth(parseInt(width));
+    if (height) setHeight(parseInt(height));
+    if (promptScale) setPromptWeighting(parseInt(promptScale));
     if (seed === '-1' || !seed) return;
     setUseSeed(true);
     setSeed(seed);
@@ -77,9 +79,11 @@ const GenerateImages = () => {
           )
         }
         title='Width'
+        disabled={isLoading}
       />
       <CustomSlider
         min={512}
+        disabled={isLoading}
         max={1024}
         value={height}
         step={64}
@@ -94,6 +98,7 @@ const GenerateImages = () => {
       />
       <CustomSlider
         min={1}
+        disabled={isLoading}
         max={10}
         value={promptWeighting}
         step={0.1}
@@ -110,6 +115,7 @@ const GenerateImages = () => {
       <CustomSlider
         min={1}
         max={10}
+        disabled={isLoading}
         value={noOfImages}
         onChange={(e, v) =>
           setNoOfImages(
@@ -129,11 +135,12 @@ const GenerateImages = () => {
             fullWidth
             value={seed}
             onChange={({ target }) => setSeed(target.value)}
-            disabled={!useSeed}
+            disabled={!useSeed || isLoading}
           />
         </Grid>
         <Grid item xs={3}>
           <Switch
+            disabled={isLoading}
             color='secondary'
             checked={useSeed}
             onChange={({ target }) => setUseSeed(target.checked)}
@@ -208,13 +215,12 @@ const GenerateImages = () => {
                 minHeight='75vh'
                 alignContent='flex-start'
               >
-                {imagesData.length > 0
-                  ? imagesData.map((image, i) => (
-                      <ImageComponent key={i} image={image} />
-                    ))
-                  : Array.from(Array(noOfImages).keys()).map((_, i) => (
-                      <ImageComponent key={i} isLoading={isLoading} />
-                    ))}
+                {imagesData.map((image, i) => (
+                  <ImageComponent
+                    key={i}
+                    image={typeof image === 'number' ? null : image}
+                  />
+                ))}
               </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -237,8 +243,17 @@ const GenerateImages = () => {
                       rows={2}
                       variant='outlined'
                       multiline
+                      disabled={isLoading}
                       fullWidth
                       color='secondary'
+                      helperText={requiredPrompt && 'This is Required'}
+                      FormHelperTextProps={{
+                        style: {
+                          color: 'red',
+                          fontWeight: 600,
+                          fontSize: '0.8rem',
+                        },
+                      }}
                       value={prompt}
                       onChange={({ target }) => setPrompt(target.value)}
                       InputProps={{
@@ -258,7 +273,7 @@ const GenerateImages = () => {
                         transition: 'all 0.1s ease',
                       }}
                       onClick={
-                        !prompt ? () => {} : generateImages
+                        !prompt ? () => setRequiredPrompt(true) : generateImages
                       }
                       disabled={isLoading}
                     >
