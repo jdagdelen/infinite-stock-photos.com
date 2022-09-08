@@ -15,12 +15,8 @@ const SocialShare = ({
   setOpen,
   placement,
   setPlacement,
+  handleClick,
 }) => {
-  const handleClick = (newPlacement) => (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => placement !== newPlacement || !prev);
-    setPlacement(newPlacement);
-  };
   return (
     <>
       <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
@@ -46,8 +42,8 @@ const SocialShare = ({
           </Grow>
         )}
       </Popper>
-      <IconButton onClick={handleClick('right')} color='warning'>
-        {open ? <Close /> : <Share />}
+      <IconButton onClick={handleClick('right')}>
+        {open ? <Close htmlColor='white' /> : <Share htmlColor='white' />}
       </IconButton>
     </>
   );

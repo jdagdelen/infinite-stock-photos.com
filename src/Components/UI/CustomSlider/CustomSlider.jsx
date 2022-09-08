@@ -9,6 +9,7 @@ const CustomSlider = ({
   min,
   max,
   step = 1,
+  disabled,
 }) => {
   return (
     <Grid container direction='column'>
@@ -22,6 +23,7 @@ const CustomSlider = ({
             value={value}
             onChange={onChange}
             color='secondary'
+            disabled={disabled}
             inputProps={{
               step,
               min: min,
@@ -44,6 +46,7 @@ const CustomSlider = ({
           step={step}
           min={min}
           max={max}
+          disabled={disabled}
         />
       </Grid>
     </Grid>

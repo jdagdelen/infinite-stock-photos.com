@@ -77,9 +77,11 @@ const GenerateImages = () => {
           )
         }
         title='Width'
+        disabled={isLoading}
       />
       <CustomSlider
         min={512}
+        disabled={isLoading}
         max={1024}
         value={height}
         step={64}
@@ -94,6 +96,7 @@ const GenerateImages = () => {
       />
       <CustomSlider
         min={1}
+        disabled={isLoading}
         max={10}
         value={promptWeighting}
         step={0.1}
@@ -110,6 +113,7 @@ const GenerateImages = () => {
       <CustomSlider
         min={1}
         max={10}
+        disabled={isLoading}
         value={noOfImages}
         onChange={(e, v) =>
           setNoOfImages(
@@ -129,11 +133,12 @@ const GenerateImages = () => {
             fullWidth
             value={seed}
             onChange={({ target }) => setSeed(target.value)}
-            disabled={!useSeed}
+            disabled={!useSeed || isLoading}
           />
         </Grid>
         <Grid item xs={3}>
           <Switch
+            disabled={isLoading}
             color='secondary'
             checked={useSeed}
             onChange={({ target }) => setUseSeed(target.checked)}
@@ -208,13 +213,12 @@ const GenerateImages = () => {
                 minHeight='75vh'
                 alignContent='flex-start'
               >
-                {imagesData.length > 0
-                  ? imagesData.map((image, i) => (
-                      <ImageComponent key={i} image={image} />
-                    ))
-                  : Array.from(Array(noOfImages).keys()).map((_, i) => (
-                      <ImageComponent key={i} isLoading={isLoading} />
-                    ))}
+                {imagesData.map((image, i) => (
+                  <ImageComponent
+                    key={i}
+                    image={typeof image === 'number' ? null : image}
+                  />
+                ))}
               </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -237,6 +241,7 @@ const GenerateImages = () => {
                       rows={2}
                       variant='outlined'
                       multiline
+                      disabled={isLoading}
                       fullWidth
                       color='secondary'
                       value={prompt}
