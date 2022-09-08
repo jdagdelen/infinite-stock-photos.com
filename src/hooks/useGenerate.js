@@ -28,7 +28,7 @@ export default function useGenerate() {
       navigate('/sign-in');
       return;
     }
-    if (user.role != 'premium' && credits < noOfImages) {
+    if (user.role !== 'premium' && credits < noOfImages) {
       navigate('/manage-account');
       return;
     }

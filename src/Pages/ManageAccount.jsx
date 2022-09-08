@@ -29,6 +29,7 @@ const ManageAccount = () => {
 
   const [showChangePlanModal, setShowChangePlanModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { user, resetPassword } = useAuth();
   const { features, upgradeText } = userFeatures(
@@ -73,7 +74,15 @@ const ManageAccount = () => {
                 variant='contained'
                 color='secondary'
                 disabled={user.role === 'premium'}
-                onClick={purchase}
+                onClick={async () => {
+                  setShowLoadingModal(true);
+                  try {
+                    await purchase();
+                  } catch (error) {
+                    setShowLoadingModal(false);
+                  }
+                }
+                  }
               >
                 {user.role === 'premium' ? 'Unlimited' : 'Purchase Credits'}
               </Button>
@@ -90,7 +99,15 @@ const ManageAccount = () => {
                 variant='contained'
                 color='secondary'
                 disabled={user.role === 'premium'}
-                onClick={subscribe}
+                onClick={async () => {
+                  setShowLoadingModal(true);
+                  try {
+                    await subscribe();
+                  } catch (error) {
+                    setShowLoadingModal(false);
+                  }
+                }
+                  }
               >
                 {user.role === 'premium' ? 'Current Plan' : 'Select Plan'}
               </Button>
@@ -112,6 +129,12 @@ const ManageAccount = () => {
       <Typography align='center'>
         Check your email for a link to change your password.
       </Typography>
+    </Modal>
+  );
+
+  const loadingModal = (
+    <Modal key='loadingModal' onClose={() => {}}>
+      <LinearProgress />
     </Modal>
   );
 
@@ -173,6 +196,9 @@ const ManageAccount = () => {
           <AnimatePresence>{showChangePlanModal && planModal}</AnimatePresence>
           <AnimatePresence>
             {showChangePasswordModal && passwordModal}
+          </AnimatePresence>
+          <AnimatePresence>
+            {showLoadingModal && loadingModal}
           </AnimatePresence>
           <Typography color='GrayText' marginTop='1em'>
               Contact <b>help@infinitestockphotos.com</b> for any other questions.
