@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useCredits from '../hooks/useCredits';
 
 import useAuth from './useAuth';
 import moment from 'moment';
@@ -16,6 +17,7 @@ export default function useGenerate() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [imagesData, setImagesData] = useState([]);
+  const credits = useCredits().creditsRemaining;
 
   const navigate = useNavigate();
 
@@ -26,7 +28,7 @@ export default function useGenerate() {
       navigate('/sign-in');
       return;
     }
-    if (!!!user.role) {
+    if (user.role != 'premium' && credits < noOfImages) {
       navigate('/manage-account');
       return;
     }
