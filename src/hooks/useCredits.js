@@ -7,17 +7,18 @@ export default function useCredits() {
   const { token } = useAuth();
 
   useEffect(() => {
-    axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_API_URL}/credits`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        setCreditsRemaining(res.data);
+    if (token)
+      axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_API_URL}/credits`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch((e) => {});
-  });
+        .then((res) => {
+          setCreditsRemaining(res.data);
+        })
+        .catch((e) => {});
+  }, [token]);
   return { creditsRemaining };
 }

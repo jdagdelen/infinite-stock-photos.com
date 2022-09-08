@@ -17,6 +17,7 @@ export default function useGenerate() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [imagesData, setImagesData] = useState([]);
+  const [requiredPrompt, setRequiredPrompt] = useState(false);
   const shownIndex = useRef(0);
   const index = useRef(0);
 
@@ -91,5 +92,7 @@ export default function useGenerate() {
     setIsDrawerOpen,
     generateImages,
     imagesData,
+    requiredPrompt,
+    setRequiredPrompt,
   };
 }

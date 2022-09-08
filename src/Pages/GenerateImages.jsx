@@ -43,6 +43,8 @@ const GenerateImages = () => {
     setPrompt,
     generateImages,
     imagesData,
+    requiredPrompt,
+    setRequiredPrompt,
   } = useGenerate();
   const [searchParams] = useSearchParams();
 
@@ -54,9 +56,9 @@ const GenerateImages = () => {
     const width = searchParams.get('width');
     const height = searchParams.get('height');
     if (prompt) setPrompt(prompt);
-    if (width) setWidth(width);
-    if (height) setHeight(height);
-    if (promptScale) setPromptWeighting(promptScale);
+    if (width) setWidth(parseInt(width));
+    if (height) setHeight(parseInt(height));
+    if (promptScale) setPromptWeighting(parseInt(promptScale));
     if (seed === '-1' || !seed) return;
     setUseSeed(true);
     setSeed(seed);
@@ -244,6 +246,14 @@ const GenerateImages = () => {
                       disabled={isLoading}
                       fullWidth
                       color='secondary'
+                      helperText={requiredPrompt && 'This is Required'}
+                      FormHelperTextProps={{
+                        style: {
+                          color: 'red',
+                          fontWeight: 600,
+                          fontSize: '0.8rem',
+                        },
+                      }}
                       value={prompt}
                       onChange={({ target }) => setPrompt(target.value)}
                       InputProps={{
@@ -263,7 +273,7 @@ const GenerateImages = () => {
                         transition: 'all 0.1s ease',
                       }}
                       onClick={
-                        !prompt ? () => {} : generateImages
+                        !prompt ? () => setRequiredPrompt(true) : generateImages
                       }
                       disabled={isLoading}
                     >
