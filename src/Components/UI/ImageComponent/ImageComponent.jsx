@@ -7,12 +7,18 @@ import {
   IconButton,
   LinearProgress,
 } from '@mui/material';
-import { FavoriteBorder, StarBorder } from '@mui/icons-material';
+import {
+  Favorite,
+  FavoriteBorder,
+  Star,
+  StarBorder,
+} from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import PlaceHolderImage from '../../../assets/product-image-placeholder.svg';
 import SocialShare from './SocialShare';
 import ZoomedImage from './ZoomedImage';
+import useLike from '../../../hooks/useLike';
 
 const ImageComponent = ({
   image,
@@ -27,8 +33,11 @@ const ImageComponent = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState();
-  const [width, setWidth] = useState(0);
+  // const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const [likesImage, setLikesImage] = useState(false);
+  const [favoritedImage, setFavoritedImage] = useState(false);
+  const { likeImage, favoriteImage } = useLike();
   const handleClick = (newPlacement) => (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => placement !== newPlacement || !prev);
@@ -44,6 +53,20 @@ const ImageComponent = ({
     exit: {
       opacity: 0,
     },
+  };
+
+  const likeThis = () => {
+    try {
+      setLikesImage(true);
+      likeImage(image.split('/')[4]);
+    } catch (e) {}
+  };
+
+  const favoriteThis = () => {
+    try {
+      setFavoritedImage(true);
+      favoriteImage(image.split('/')[4]);
+    } catch (e) {}
   };
 
   return (
@@ -101,13 +124,22 @@ const ImageComponent = ({
                   placement={placement}
                   setPlacement={setPlacement}
                   handleClick={handleClick}
+                  url={image}
                 />
                 <Stack direction='row'>
-                  <IconButton>
-                    <FavoriteBorder htmlColor='white' />
+                  <IconButton onClick={likeThis}>
+                    {likesImage ? (
+                      <Favorite htmlColor='white' />
+                    ) : (
+                      <FavoriteBorder htmlColor='white' />
+                    )}
                   </IconButton>
-                  <IconButton>
-                    <StarBorder htmlColor='white' />
+                  <IconButton onClick={favoriteThis}>
+                    {favoritedImage ? (
+                      <Star htmlColor='white' />
+                    ) : (
+                      <StarBorder htmlColor='white' />
+                    )}
                   </IconButton>
                 </Stack>
               </Stack>

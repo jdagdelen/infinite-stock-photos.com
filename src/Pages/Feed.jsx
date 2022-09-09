@@ -2,67 +2,48 @@
 //------  /   ------ //
 //------------------ //
 
-import { useRef, useState, useEffect } from 'react';
-import { CircularProgress, Stack } from '@mui/material';
+import { useState } from 'react';
+import { Tab } from '@mui/material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 
-import FeedGrid from '../Components/UI/FeedGrid/FeedGrid';
+import FeedTab from '../Components/Tabs/FeedTab';
 import useFeed from '../hooks/useFeed';
-import ScrollToTopButton from '../Components/UI/ScrollToTopButton/ScrollToTopButton';
 
 const Feed = () => {
+  const [tabValue, setTabValue] = useState('1');
   const [pageNo, setPageNo] = useState(1);
   const { isLoading, imagesData } = useFeed(pageNo);
-  const [lastElement, setLastElement] = useState(null);
-  const observer = useRef(
-    new IntersectionObserver((entries) => {
-      const first = entries[0];
-      if (first.isIntersecting) {
-        setPageNo((no) => no + 1);
-      }
-    })
-  );
-  useEffect(() => {
-    const currentElement = lastElement;
-    const currentObserver = observer.current;
 
-    if (currentElement) {
-      currentObserver.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        currentObserver.unobserve(currentElement);
-      }
-    };
-  }, [lastElement]);
-
-  useEffect(() => {
-    document.title = 'Feed';
-  }, []);
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   return (
-    <>
-      {imagesData.map((data, i) => (
-        <FeedGrid
-          forwardedRef={imagesData.length === i + 1 ? setLastElement : null}
-          key={i}
-          generationDetails={data.generation_details}
-          generationPrompt={data.generation_prompt}
-          images={data.image_urls}
-          timestamp={data.timestamp}
+    <TabContext value={tabValue}>
+      <TabList
+        variant='fullWidth'
+        onChange={handleChange}
+        textColor='secondary'
+        indicatorColor='secondary'
+      >
+        <Tab label='Feed' value='1' />
+        <Tab label='My Generations' value='2' />
+      </TabList>
+      <TabPanel value='1'>
+        <FeedTab
+          imagesData={imagesData}
+          isLoading={isLoading}
+          setPageNo={setPageNo}
         />
-      ))}
-      {isLoading && (
-        <Stack
-          direction='column'
-          alignItems='center'
-          sx={{ margin: '1em 0', overflow: 'hidden' }}
-        >
-          <CircularProgress />
-        </Stack>
-      )}
-      <ScrollToTopButton />
-    </>
+      </TabPanel>
+      <TabPanel value='2'>
+        <FeedTab
+          imagesData={imagesData}
+          isLoading={isLoading}
+          setPageNo={setPageNo}
+        />
+      </TabPanel>
+    </TabContext>
   );
 };
 
