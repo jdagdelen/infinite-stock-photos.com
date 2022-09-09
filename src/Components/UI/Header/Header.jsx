@@ -78,6 +78,9 @@ const Header = (props) => {
       <Typography variant='h6' sx={{ my: 2, fontWeight: 700 }}>
         InfiniteStockPhotos.com
       </Typography>
+      <Typography variant='caption'>
+        Free stock images, generated with artificial intelligence
+      </Typography>
       <Divider />
       {isLoggedIn && (
         <Stack direction='column' alignItems='center' sx={{ padding: '1em 0' }}>
@@ -144,17 +147,26 @@ const Header = (props) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography
-          variant='h6'
-          component='div'
+        <Stack
+          direction='column'
           sx={{
             flexGrow: 1,
             display: { xs: 'none', md: 'block' },
-            fontWeight: 700,
           }}
         >
-          InfiniteStockPhotos.com
-        </Typography>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{
+              fontWeight: 700,
+            }}
+          >
+            InfiniteStockPhotos.com
+          </Typography>
+          <Typography variant='caption'>
+            Free stock images, generated with artificial intelligence
+          </Typography>
+        </Stack>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           {links.map(({ title, path }, i) => (
             <NavigationLink key={i} path={path} title={title} />

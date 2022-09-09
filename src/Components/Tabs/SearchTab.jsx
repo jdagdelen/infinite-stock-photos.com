@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { Stack, CircularProgress, Grid, useTheme } from '@mui/material';
+import {
+  Stack,
+  CircularProgress,
+  Grid,
+  useTheme,
+  Typography,
+} from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
@@ -78,27 +84,36 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
         }}
       />
 
-      <Stack direction='row'>
-        {grid.map((col, index) => (
-          <Grid container key={index} direction='column' sx={{ width }}>
-            <AnimatePresence>
-              {col.map((data, i) => (
-                <ImageComponent
-                  forwardedRef={col.length === i + 1 ? setLastElement : null}
-                  key={i}
-                  index={i}
-                  image={data.fields.image_url}
-                  description={
-                    data.fields?.generation_prompt !== 'None' &&
-                    data.fields?.generation_prompt
-                  }
-                  square
-                />
-              ))}
-            </AnimatePresence>
-          </Grid>
-        ))}
-      </Stack>
+      {grid && grid[0].length > 0 ? (
+        <Stack direction='row'>
+          {grid?.map((col, index) => (
+            <Grid container key={index} direction='column' sx={{ width }}>
+              <AnimatePresence>
+                {col.map((data, i) => (
+                  <ImageComponent
+                    forwardedRef={col.length === i + 1 ? setLastElement : null}
+                    key={i}
+                    index={i}
+                    image={data.fields.image_url}
+                    description={
+                      data.fields?.generation_prompt !== 'None' &&
+                      data.fields?.generation_prompt
+                    }
+                    square
+                  />
+                ))}
+              </AnimatePresence>
+            </Grid>
+          ))}
+        </Stack>
+      ) : (
+        !isLoading &&
+        prompt && (
+          <Typography align='center' variant='h5' color='secondary'>
+            Couldn't Find Any Images
+          </Typography>
+        )
+      )}
       {isLoading && (
         <Stack
           direction='column'

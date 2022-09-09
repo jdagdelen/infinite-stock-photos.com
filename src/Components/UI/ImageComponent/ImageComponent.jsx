@@ -57,14 +57,14 @@ const ImageComponent = ({
 
   const likeThis = () => {
     try {
-      setLikesImage(true);
+      setLikesImage(!likesImage);
       likeImage(image.split('/')[4]);
     } catch (e) {}
   };
 
   const favoriteThis = () => {
     try {
-      setFavoritedImage(true);
+      setFavoritedImage(!favoritedImage);
       favoriteImage(image.split('/')[4]);
     } catch (e) {}
   };
