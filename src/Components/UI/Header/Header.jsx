@@ -193,6 +193,7 @@ const Header = (props) => {
                     overflow: 'visible',
                     filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                     mt: 1.5,
+                    minWidth: '10vw',
                     '&:before': {
                       content: '""',
                       display: 'block',

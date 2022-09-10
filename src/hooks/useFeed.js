@@ -32,7 +32,10 @@ export default function useFeed(feedPageNo, myCPageNo) {
       const { data } = await axios({
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}/generation_history`,
-        params: { hits: 40, offset: (feedPageNo - 1) * 40 },
+        params: { hits: 40, offset: (myCPageNo - 1) * 40 },
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
       });
       console.log(data);
       setMyCreationsData((prevImagesData) => {

@@ -3,14 +3,16 @@ import { Stack, CircularProgress, Typography } from '@mui/material';
 
 import FeedGrid from '../UI/FeedGrid/FeedGrid';
 import ScrollToTopButton from '../UI/ScrollToTopButton/ScrollToTopButton';
+import useAuth from '../../hooks/useAuth';
 
-const MyGenerations = ({ setPageNo, imagesData, isLoading }) => {
+const MyGenerations = ({ setMyCPageNo, imagesData, isLoading }) => {
+  const { isLoggedIn } = useAuth();
   const [lastElement, setLastElement] = useState(null);
   const observer = useRef(
     new IntersectionObserver((entries) => {
       const first = entries[0];
       if (first.isIntersecting) {
-        setPageNo((no) => no + 1);
+        setMyCPageNo((no) => no + 1);
       }
     })
   );
@@ -46,9 +48,15 @@ const MyGenerations = ({ setPageNo, imagesData, isLoading }) => {
               timestamp={data.timestamp}
             />
           ))
-        : !isLoading && (
+        : !isLoggedIn
+        ? !isLoading && (
             <Typography variant='h5' align='center' color='secondary'>
               Sign In to see your Generations
+            </Typography>
+          )
+        : !isLoading && (
+            <Typography variant='h5' align='center' color='secondary'>
+              No Previous Generations Found
             </Typography>
           )}
       {isLoading && (

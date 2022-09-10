@@ -12,13 +12,9 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from 'firebase/auth';
-import {
-  getFirestore,
-} from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 
-import {
-  firebaseConfig,
-} from '../config';
+import { firebaseConfig } from '../config';
 import authError from '../utils/auth-error';
 
 export const app = firebase.initializeApp(firebaseConfig);
@@ -147,7 +143,7 @@ export const AuthProvider = ({ children }) => {
         setShowSuccessModal,
         isLoading,
         resetPassword,
-        db
+        db,
       }}
     >
       {children}

@@ -43,7 +43,7 @@ const Feed = () => {
       </TabPanel>
       <TabPanel value='2'>
         <MyGenerations
-          setPageNo={setMyCPageNo}
+          setMyCPageNo={setMyCPageNo}
           isLoading={creationLoading}
           imagesData={myCreationsData}
         />
