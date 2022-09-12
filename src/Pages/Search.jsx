@@ -30,7 +30,7 @@ const Search = () => {
           indicatorColor='secondary'
         >
           <Tab label='Search' value='1' />
-          <Tab label='My Favorites' value='2' />
+          {/* <Tab label='My Favorites' value='2' /> */}
         </TabList>
         <TabPanel value='1'>
           <SearchTab
@@ -39,9 +39,9 @@ const Search = () => {
             setPageNo={setPageNo}
           />
         </TabPanel>
-        <TabPanel value='2'>
+        {/* <TabPanel value='2'>
           <FavoritesTab />
-        </TabPanel>
+        </TabPanel> */}
       </TabContext>
     </>
   );

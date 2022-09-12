@@ -9,6 +9,8 @@ import {
   TextField,
   Button,
   LinearProgress,
+  Link,
+  Checkbox,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Google } from '@mui/icons-material';
@@ -29,6 +31,8 @@ const RegisterForm = () => {
   } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [agree, setAgree] = useState(false);
+
   return (
     <Grid
       container
@@ -121,7 +125,29 @@ const RegisterForm = () => {
                 <Typography color='red'>{errorMessage}</Typography>
               )}
             </Stack>
+          <Stack
+            direction='row'
+            justifyContent='center'
+            alignItems='center'
+            marginTop='1em'
+            gap='0.5em'
+          >
+            {/* <CheckBox htmlColor='#f50057' /> */}
+            <Checkbox checked={agree} onChange={() => setAgree(!agree)} color='secondary' />
+            <Typography color='GrayText'>
+              I agree not to attempt to generate NSFW images and follow the{' '}
+              <Link
+                href='https://github.com/CompVis/stable-diffusion/blob/main/LICENSE'
+                color='secondary'
+                underline='none'
+                rel='noreferrer'
+              >
+                Stable Diffusion license
+              </Link>
+            </Typography>
+          </Stack>
           </CardContent>
+          
           <Button
             variant='contained'
             color='error'
@@ -131,6 +157,7 @@ const RegisterForm = () => {
             disableElevation
             type='button'
             onClick={() => firebaseGoogleSignIn('register')}
+            disabled={!agree}
           >
             Use Google Account
           </Button>
@@ -141,6 +168,7 @@ const RegisterForm = () => {
             sx={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
             disableElevation
             type='submit'
+            disabled={!agree}
           >
             Sign Up
           </Button>

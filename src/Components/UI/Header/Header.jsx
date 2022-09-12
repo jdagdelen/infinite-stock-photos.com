@@ -232,7 +232,7 @@ const Header = (props) => {
                   <ListItemIcon>
                     <Settings fontSize='small' />
                   </ListItemIcon>
-                  Settings
+                  Manage Account/Credits
                 </MenuItem>
                 <MenuItem onClick={logout}>
                   <ListItemIcon>

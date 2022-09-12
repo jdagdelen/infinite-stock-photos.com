@@ -204,7 +204,7 @@ const ManageAccount = () => {
           >
             <CheckBox htmlColor='#f50057' />
             <Typography color='GrayText'>
-              I agree not to attempt to generate images containing nudity, gore,
+              I agreed not to attempt to generate images containing nudity, gore,
               violence, or other NSFW images and follow the{' '}
               <Link
                 href='https://github.com/CompVis/stable-diffusion/blob/main/LICENSE'
