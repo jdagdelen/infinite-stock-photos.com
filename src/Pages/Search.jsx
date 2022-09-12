@@ -2,88 +2,47 @@
 //------  /search   ------ //
 //------------------ //
 
-import React, { useEffect, useState, useRef } from 'react';
-import { Stack, CircularProgress, Grid } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+import { Tab } from '@mui/material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import React, { useState } from 'react';
 
-import SearchBar from '../Components/UI/SearchBar/SearchBar';
+import SearchTab from '../Components/Tabs/SearchTab';
+import FavoritesTab from '../Components/Tabs/FavoritesTab';
+
 import useSearch from '../hooks/useSearch';
-import ImageComponent from '../Components/UI/ImageComponent/ImageComponent';
-import ScrollToTopButton from '../Components/UI/ScrollToTopButton/ScrollToTopButton';
 
 const Search = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const prompt = searchParams.get('prompt');
-  const [query, setQuery] = useState(prompt ?? '');
+  const [tabValue, setTabValue] = useState('1');
   const [pageNo, setPageNo] = useState(1);
-  const [lastElement, setLastElement] = useState(null);
   const { imagesData, isLoading } = useSearch(pageNo, setPageNo);
-  const observer = useRef(
-    new IntersectionObserver((entries) => {
-      const first = entries[0];
-      if (first.isIntersecting) {
-        setPageNo((no) => no + 1);
-      }
-    })
-  );
-  useEffect(() => {
-    const currentElement = lastElement;
-    const currentObserver = observer.current;
 
-    if (currentElement) {
-      currentObserver.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        currentObserver.unobserve(currentElement);
-      }
-    };
-  }, [lastElement]);
-
-  useEffect(() => {
-    document.title = 'Search';
-  }, []);
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   return (
     <>
-      <SearchBar
-        value={query}
-        onChange={({ target }) => setQuery(target.value)}
-        onClick={(e) => {
-          if (e) e.preventDefault();
-          setSearchParams({ prompt: query }, { replace: true });
-        }}
-      />
-
-      <Grid container direction='row' flexWrap='wrap'>
-        <AnimatePresence>
-          {imagesData.map((data, i) => (
-            <ImageComponent
-              forwardedRef={imagesData.length === i + 1 ? setLastElement : null}
-              key={i}
-              index={i}
-              image={data.fields.image_url}
-              description={
-                data.fields?.generation_prompt !== 'None' &&
-                data.fields?.generation_prompt
-              }
-              square
-            />
-          ))}
-        </AnimatePresence>
-      </Grid>
-      {isLoading && (
-        <Stack
-          direction='column'
-          alignItems='center'
-          sx={{ marginTop: '1em', overflowX: 'hidden' }}
+      <TabContext value={tabValue}>
+        <TabList
+          variant='fullWidth'
+          onChange={handleChange}
+          textColor='secondary'
+          indicatorColor='secondary'
         >
-          <CircularProgress />
-        </Stack>
-      )}
-      <ScrollToTopButton />
+          <Tab label='Search' value='1' />
+          {/* <Tab label='My Favorites' value='2' /> */}
+        </TabList>
+        <TabPanel value='1'>
+          <SearchTab
+            imagesData={imagesData}
+            isLoading={isLoading}
+            setPageNo={setPageNo}
+          />
+        </TabPanel>
+        {/* <TabPanel value='2'>
+          <FavoritesTab />
+        </TabPanel> */}
+      </TabContext>
     </>
   );
 };

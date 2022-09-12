@@ -1,12 +1,7 @@
-import {
-  Close,
-  Facebook,
-  Instagram,
-  Share,
-  Twitter,
-} from '@mui/icons-material';
-import { Grow, IconButton, Paper, Popper, Stack } from '@mui/material';
 import React from 'react';
+import { Download } from '@mui/icons-material';
+import { Button, Grow, IconButton, Paper, Popper, Stack } from '@mui/material';
+import { saveAs } from 'file-saver';
 
 const SocialShare = ({
   anchorEl,
@@ -16,7 +11,16 @@ const SocialShare = ({
   placement,
   setPlacement,
   handleClick,
+  url,
 }) => {
+  const downloadPNG = () => {
+    saveAs(url, 'image.png');
+  };
+
+  const downloadJPG = () => {
+    saveAs(url, 'image.jpg');
+  };
+
   return (
     <>
       <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
@@ -28,22 +32,27 @@ const SocialShare = ({
           >
             <Paper sx={{ borderRadius: 15 }}>
               <Stack direction='row'>
-                <IconButton color='info'>
-                  <Twitter />
-                </IconButton>
-                <IconButton color='info'>
-                  <Facebook />
-                </IconButton>
-                <IconButton color='secondary'>
-                  <Instagram />
-                </IconButton>
+                <Button
+                  sx={{ borderRadius: '35%' }}
+                  color='secondary'
+                  onClick={downloadPNG}
+                >
+                  PNG
+                </Button>
+                <Button
+                  sx={{ borderRadius: '35%' }}
+                  color='secondary'
+                  onClick={downloadJPG}
+                >
+                  JPEG
+                </Button>
               </Stack>
             </Paper>
           </Grow>
         )}
       </Popper>
       <IconButton onClick={handleClick('right')}>
-        {open ? <Close htmlColor='white' /> : <Share htmlColor='white' />}
+        <Download htmlColor='white' />
       </IconButton>
     </>
   );

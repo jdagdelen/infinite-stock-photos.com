@@ -14,13 +14,18 @@ import {
   Stack,
   Switch,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
+import { Close, Settings } from '@mui/icons-material';
+import { AnimatePresence } from 'framer-motion';
 
 import CustomSlider from '../Components/UI/CustomSlider/CustomSlider';
-import useGenerate from '../hooks/useGenerate';
 import ImageComponent from '../Components/UI/ImageComponent/ImageComponent';
-import { Close, Settings } from '@mui/icons-material';
+import Modal from '../Components/UI/Modal/Modal';
+import useGenerate from '../hooks/useGenerate';
+import useCredits from '../hooks/useCredits';
+import useAuth from '../hooks/useAuth';
 
 const GenerateImages = () => {
   const {
@@ -45,8 +50,12 @@ const GenerateImages = () => {
     imagesData,
     requiredPrompt,
     setRequiredPrompt,
+    showBuyCreditsModal,
+    setShowBuyCreditsModal,
   } = useGenerate();
   const [searchParams] = useSearchParams();
+  const credits = useCredits().creditsRemaining;
+  const { user } = useAuth();
 
   useEffect(() => {
     document.title = 'Generate Images';
@@ -125,6 +134,15 @@ const GenerateImages = () => {
           )
         }
         title='Number of images'
+        description={
+          <>
+            {user.role && user.role === 'premium'
+              ? 'Unlimited Credits'
+              : `${credits} Credits Left.`}
+            <br />
+            Cost: 1 Credit per image
+          </>
+        }
       />
       <Grid container>
         <Grid item xs={9} flexGrow={2}>
@@ -183,6 +201,18 @@ const GenerateImages = () => {
       </Drawer>
     </>
   );
+
+  const generateOnClick = () => {
+    if (!prompt) {
+      setRequiredPrompt(true);
+      return;
+    }
+    if (credits === 0 && user.role && user.role !== 'premium') {
+      setShowBuyCreditsModal(true);
+      return;
+    }
+    generateImages();
+  };
 
   return (
     <Container maxWidth='xl'>
@@ -272,9 +302,7 @@ const GenerateImages = () => {
                         marginTop: { xs: '1em', md: 0 },
                         transition: 'all 0.1s ease',
                       }}
-                      onClick={
-                        !prompt ? () => setRequiredPrompt(true) : generateImages
-                      }
+                      onClick={generateOnClick}
                       disabled={isLoading}
                     >
                       {isLoading ? (
@@ -297,6 +325,21 @@ const GenerateImages = () => {
         </Grid>
       </Grid>
       {mobileDrawer}
+      <AnimatePresence>
+        {showBuyCreditsModal && (
+          <Modal
+            key='BuyMoreCreditsModal'
+            onClose={() => setShowBuyCreditsModal(!setShowBuyCreditsModal)}
+          >
+            <Typography variant='h3' align='center'>
+              Insufficient Credits
+            </Typography>
+            <Typography variant='h6' align='center'>
+              Buy More to generate more images
+            </Typography>
+          </Modal>
+        )}
+      </AnimatePresence>
     </Container>
   );
 };

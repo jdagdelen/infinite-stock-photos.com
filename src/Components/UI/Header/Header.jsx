@@ -78,6 +78,9 @@ const Header = (props) => {
       <Typography variant='h6' sx={{ my: 2, fontWeight: 700 }}>
         InfiniteStockPhotos.com
       </Typography>
+      <Typography variant='caption'>
+        Free stock images, generated with artificial intelligence
+      </Typography>
       <Divider />
       {isLoggedIn && (
         <Stack direction='column' alignItems='center' sx={{ padding: '1em 0' }}>
@@ -144,17 +147,27 @@ const Header = (props) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography
-          variant='h6'
-          component='div'
+        <Stack
+          direction='column'
           sx={{
             flexGrow: 1,
             display: { xs: 'none', md: 'block' },
-            fontWeight: 700,
           }}
         >
-          InfiniteStockPhotos.com
-        </Typography>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{
+              fontWeight: 700,
+              lineHeight: 0.7,
+            }}
+          >
+            InfiniteStockPhotos.com
+          </Typography>
+          <Typography variant='caption'>
+            Free stock images, generated with artificial intelligence
+          </Typography>
+        </Stack>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           {links.map(({ title, path }, i) => (
             <NavigationLink key={i} path={path} title={title} />
@@ -181,6 +194,7 @@ const Header = (props) => {
                     overflow: 'visible',
                     filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                     mt: 1.5,
+                    minWidth: '10vw',
                     '&:before': {
                       content: '""',
                       display: 'block',
@@ -218,7 +232,7 @@ const Header = (props) => {
                   <ListItemIcon>
                     <Settings fontSize='small' />
                   </ListItemIcon>
-                  Settings
+                  Manage Account/Credits
                 </MenuItem>
                 <MenuItem onClick={logout}>
                   <ListItemIcon>

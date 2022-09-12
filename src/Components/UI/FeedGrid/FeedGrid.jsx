@@ -1,11 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
 import { Replay } from '@mui/icons-material';
-import { AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
-
-import ImageComponent from '../ImageComponent/ImageComponent';
 
 const FeedGrid = ({
   images,
@@ -23,6 +20,7 @@ const FeedGrid = ({
     height: generationDetails.height,
     modelVersion: generationDetails.model_version,
   };
+  const [largeText, setLargeText] = useState(prompt.length > 400);
   const tStamp = moment.unix(timestamp);
 
   return (
@@ -36,7 +34,37 @@ const FeedGrid = ({
         <Grid item sm={12} md={3} sx={{ padding: '1em', width: '100%' }}>
           <Card sx={{ width: '100%' }}>
             <CardContent>
-              <Typography>{prompt}</Typography>
+              {prompt.length > 400 ? (
+                <Typography
+                  maxHeight={largeText && 512}
+                  overflow={largeText && 'hidden'}
+                  marginBottom={largeText && '0.5em'}
+                >
+                  {largeText ? (
+                    <>
+                      {prompt.slice(0, 400)}...{' '}
+                      <span
+                        style={{ fontWeight: 600, cursor: 'pointer' }}
+                        onClick={() => setLargeText(!largeText)}
+                      >
+                        Show More
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {prompt}{' '}
+                      <span
+                        style={{ fontWeight: 600, cursor: 'pointer' }}
+                        onClick={() => setLargeText(!largeText)}
+                      >
+                        Show Less
+                      </span>
+                    </>
+                  )}
+                </Typography>
+              ) : (
+                <Typography>{prompt}</Typography>
+              )}
               <Button
                 variant='contained'
                 color='secondary'
@@ -91,11 +119,7 @@ const FeedGrid = ({
         </Grid>
         <Grid item sm={12} md={9}>
           <Grid container direction='row'>
-            <AnimatePresence>
-              {images.map((image, i) => (
-                <ImageComponent key={i} image={image} square />
-              ))}
-            </AnimatePresence>
+            {images}
           </Grid>
         </Grid>
       </Grid>
