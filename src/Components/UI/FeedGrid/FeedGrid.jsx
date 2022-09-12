@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  useTheme,
-  Stack,
-} from '@mui/material';
+import React, { useState } from 'react';
+import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
 import { Replay } from '@mui/icons-material';
-import { AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
-
-import ImageComponent from '../ImageComponent/ImageComponent';
-import splitArray from '../../../utils/split-array';
 
 const FeedGrid = ({
   images,
@@ -24,9 +12,6 @@ const FeedGrid = ({
   timestamp,
 }) => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const [sections, setSections] = useState(4);
-  const [w, setW] = useState('25%');
   const { prompt, promptScale, seed, height, modelVersion, width } = {
     prompt: generationPrompt,
     seed: generationDetails.seed ?? -1,
@@ -37,34 +22,6 @@ const FeedGrid = ({
   };
   const [largeText, setLargeText] = useState(prompt.length > 400);
   const tStamp = moment.unix(timestamp);
-
-  useEffect(() => {
-    document.title = 'Search';
-    changeSecitons(theme);
-  }, [theme]);
-
-  const changeSecitons = (theme) => {
-    const wi = window.innerWidth;
-    const breakpoint = theme.breakpoints.values;
-    const isBetween = (start, end) =>
-      breakpoint[start] <= wi && breakpoint[end] > wi;
-
-    if (isBetween('xs', 'md')) {
-      setSections(1);
-      setW('100%');
-    } else if (isBetween('md', 'lg')) {
-      setSections(2);
-      setW('50%');
-    } else if (isBetween('lg', 'xl')) {
-      setSections(4);
-      setW('25%');
-    } else if (breakpoint['xl'] < wi) {
-      setSections(5);
-      setW('20%');
-    }
-  };
-
-  const grid = splitArray(images, sections);
 
   return (
     <>
@@ -161,19 +118,9 @@ const FeedGrid = ({
           <Typography variant='subtitle1'>{modelVersion}</Typography>
         </Grid>
         <Grid item sm={12} md={9}>
-          {grid && grid[0].length > 0 && (
-            <Stack direction='row'>
-              {grid?.map((col, index) => (
-                <Grid container key={index} direction='column' sx={{ w }}>
-                  <AnimatePresence>
-                    {col.map((data, i) => (
-                      <ImageComponent key={i} index={i} image={data} square />
-                    ))}
-                  </AnimatePresence>
-                </Grid>
-              ))}
-            </Stack>
-          )}
+          <Grid container direction='row'>
+            {images}
+          </Grid>
         </Grid>
       </Grid>
     </>

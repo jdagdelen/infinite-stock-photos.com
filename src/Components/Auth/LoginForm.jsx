@@ -11,13 +11,26 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Google } from '@mui/icons-material';
+import { AnimatePresence } from 'framer-motion';
+
 import useAuth from '../../hooks/useAuth';
+import Modal from '../UI/Modal/Modal';
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const { login, errorMessage, firebaseGoogleSignIn, isLoading } = useAuth();
+
+  const forgotPasswordModal = (
+    <Modal onClose={() => setShowModal(!showModal)}>
+      <Typography variant='h4' align='center'>
+        Forgot Password!
+      </Typography>
+    </Modal>
+  );
+
   return (
     <form
       onSubmit={async (e) => {
@@ -46,7 +59,7 @@ const LoginForm = () => {
                 height: 3,
                 width: 100,
                 borderRadius: 10,
-                backgroundColor: '#9B27B0BA',
+                backgroundColor: '#f50057',
               }}
             />
             <TextField
@@ -72,6 +85,9 @@ const LoginForm = () => {
               onChange={({ target: { value } }) => setPassword(value)}
               error={errorMessage !== ''}
             />
+            {errorMessage !== '' && (
+              <Typography color='red'>{errorMessage}</Typography>
+            )}
             <Typography color='GrayText'>
               No Account?{' '}
               <b
@@ -81,9 +97,9 @@ const LoginForm = () => {
                 Sign up here.
               </b>
             </Typography>
-            {errorMessage !== '' && (
-              <Typography color='red'>{errorMessage}</Typography>
-            )}
+            <Button color='secondary' onClick={() => setShowModal(!showModal)}>
+              Forgot Password?
+            </Button>
           </Stack>
         </CardContent>
         <Button
@@ -96,7 +112,6 @@ const LoginForm = () => {
         >
           Sign In
         </Button>
-        <Divider />
         <Button
           variant='contained'
           color='error'
@@ -114,6 +129,7 @@ const LoginForm = () => {
           Sign In With Google
         </Button>
       </Card>
+      <AnimatePresence>{showModal && forgotPasswordModal}</AnimatePresence>
     </form>
   );
 };

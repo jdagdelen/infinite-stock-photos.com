@@ -82,7 +82,7 @@ const RegisterForm = () => {
                   height: 3,
                   width: 150,
                   borderRadius: 10,
-                  backgroundColor: '#9B27B0BA',
+                  backgroundColor: '#f50057',
                 }}
               />
               <TextField

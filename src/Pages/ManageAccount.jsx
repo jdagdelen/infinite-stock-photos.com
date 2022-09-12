@@ -12,6 +12,7 @@ import {
   Typography,
   Box,
   LinearProgress,
+  Link,
 } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
 
@@ -21,6 +22,7 @@ import capitalizeFirstLetter from '../utils/capitalize-first-letter';
 import useAuth from '../hooks/useAuth';
 import AuthGuard from '../utils/AuthGuard';
 import useStripe from '../hooks/useStripe';
+import { CheckBox } from '@mui/icons-material';
 
 const ManageAccount = () => {
   useEffect(() => {
@@ -35,13 +37,14 @@ const ManageAccount = () => {
   const { features, upgradeText } = userFeatures(
     user.role ? user.role : 'basic'
   );
-  const {purchase, subscribe} = useStripe();
+  const { purchase, subscribe } = useStripe();
 
   const planModal = (
     <Modal
       key='planModal'
       onClose={() => setShowChangePlanModal(!showChangePlanModal)}
       maxWidth='lg'
+      showLoader={showLoadingModal}
     >
       <Typography color='GrayText'>
         Current Membership Level:{' '}
@@ -81,8 +84,7 @@ const ManageAccount = () => {
                   } catch (error) {
                     setShowLoadingModal(false);
                   }
-                }
-                  }
+                }}
               >
                 {user.role === 'premium' ? 'Unlimited' : 'Purchase Credits'}
               </Button>
@@ -106,8 +108,7 @@ const ManageAccount = () => {
                   } catch (error) {
                     setShowLoadingModal(false);
                   }
-                }
-                  }
+                }}
               >
                 {user.role === 'premium' ? 'Current Plan' : 'Select Plan'}
               </Button>
@@ -129,12 +130,6 @@ const ManageAccount = () => {
       <Typography align='center'>
         Check your email for a link to change your password.
       </Typography>
-    </Modal>
-  );
-
-  const loadingModal = (
-    <Modal key='loadingModal' onClose={() => {}}>
-      <LinearProgress />
     </Modal>
   );
 
@@ -197,12 +192,30 @@ const ManageAccount = () => {
           <AnimatePresence>
             {showChangePasswordModal && passwordModal}
           </AnimatePresence>
-          <AnimatePresence>
-            {showLoadingModal && loadingModal}
-          </AnimatePresence>
           <Typography color='GrayText' marginTop='1em'>
-              Contact <b>help@infinitestockphotos.com</b> for any other questions.
+            Contact <b>help@infinitestockphotos.com</b> for any other questions.
           </Typography>
+          <Stack
+            direction='row'
+            justifyContent='center'
+            alignItems='center'
+            marginTop='1em'
+            gap='0.5em'
+          >
+            <CheckBox htmlColor='#f50057' />
+            <Typography color='GrayText'>
+              I agree not to attempt to generate images containing nudity, gore,
+              violence, or other NSFW images and follow the{' '}
+              <Link
+                href='https://github.com/CompVis/stable-diffusion/blob/main/LICENSE'
+                color='secondary'
+                underline='none'
+                rel='noreferrer'
+              >
+                Stable Diffusion license
+              </Link>
+            </Typography>
+          </Stack>
         </Container>
       </AuthGuard>
     </Box>

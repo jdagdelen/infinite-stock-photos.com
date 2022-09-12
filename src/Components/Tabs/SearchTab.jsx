@@ -1,14 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import {
-  Stack,
-  CircularProgress,
-  Grid,
-  useTheme,
-  Typography,
-} from '@mui/material';
+import { Stack, Grid, useTheme, Typography } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 
 import SearchBar from '../UI/SearchBar/SearchBar';
 import ImageComponent from '../UI/ImageComponent/ImageComponent';
@@ -73,6 +66,8 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
   };
 
   const grid = splitArray(imagesData, sections);
+  const loaderGrid = splitArray(Array.from(Array(10).keys()), sections);
+  console.log(loaderGrid);
   return (
     <>
       <SearchBar
@@ -88,21 +83,18 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
         <Stack direction='row'>
           {grid?.map((col, index) => (
             <Grid container key={index} direction='column' sx={{ width }}>
-              <AnimatePresence>
-                {col.map((data, i) => (
-                  <ImageComponent
-                    forwardedRef={col.length === i + 1 ? setLastElement : null}
-                    key={i}
-                    index={i}
-                    image={data.fields.image_url}
-                    description={
-                      data.fields?.generation_prompt !== 'None' &&
-                      data.fields?.generation_prompt
-                    }
-                    square
-                  />
-                ))}
-              </AnimatePresence>
+              {col.map((data, i) => (
+                <ImageComponent
+                  forwardedRef={col.length === i + 1 ? setLastElement : null}
+                  key={i}
+                  image={data.fields.image_url}
+                  description={
+                    data.fields?.generation_prompt !== 'None' &&
+                    data.fields?.generation_prompt
+                  }
+                  square
+                />
+              ))}
             </Grid>
           ))}
         </Stack>
@@ -115,12 +107,14 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
         )
       )}
       {isLoading && (
-        <Stack
-          direction='column'
-          alignItems='center'
-          sx={{ marginTop: '1em', overflowX: 'hidden' }}
-        >
-          <CircularProgress />
+        <Stack direction='row'>
+          {loaderGrid?.map((col, index) => (
+            <Grid container key={index} direction='column' sx={{ width }}>
+              {col.map((_, i) => (
+                <ImageComponent key={i} square />
+              ))}
+            </Grid>
+          ))}
         </Stack>
       )}
       <ScrollToTopButton />

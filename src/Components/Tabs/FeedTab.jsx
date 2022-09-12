@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Stack, CircularProgress } from '@mui/material';
 
 import FeedGrid from '../UI/FeedGrid/FeedGrid';
+import ImageComponent from '../UI/ImageComponent/ImageComponent';
 import ScrollToTopButton from '../UI/ScrollToTopButton/ScrollToTopButton';
+import SkeletonFeedGrid from '../UI/SkeletonFeedGrid/SkeletonFeedGrid';
 
 const FeedTab = ({ setPageNo, imagesData, isLoading }) => {
   const [lastElement, setLastElement] = useState(null);
@@ -41,19 +42,14 @@ const FeedTab = ({ setPageNo, imagesData, isLoading }) => {
           key={i}
           generationDetails={data.generation_details}
           generationPrompt={data.generation_prompt}
-          images={data.image_urls}
+          images={data.image_urls.map((data, i) => (
+            <ImageComponent key={i} image={data} square />
+          ))}
           timestamp={data.timestamp}
         />
       ))}
-      {isLoading && (
-        <Stack
-          direction='column'
-          alignItems='center'
-          sx={{ margin: '1em 0', overflow: 'hidden' }}
-        >
-          <CircularProgress />
-        </Stack>
-      )}
+      {isLoading &&
+        Array.from(Array(3).keys()).map((i) => <SkeletonFeedGrid key={i} />)}
       <ScrollToTopButton />
     </>
   );

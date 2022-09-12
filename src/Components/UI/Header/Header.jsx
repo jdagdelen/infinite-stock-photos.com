@@ -159,6 +159,7 @@ const Header = (props) => {
             component='div'
             sx={{
               fontWeight: 700,
+              lineHeight: 0.7,
             }}
           >
             InfiniteStockPhotos.com

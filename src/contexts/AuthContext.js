@@ -16,6 +16,7 @@ import { getFirestore } from 'firebase/firestore';
 
 import { firebaseConfig } from '../config';
 import authError from '../utils/auth-error';
+import axios from 'axios';
 
 export const app = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -36,7 +37,6 @@ export const AuthProvider = ({ children }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [uid, setUid] = useState('');
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -44,7 +44,26 @@ export const AuthProvider = ({ children }) => {
         setUser(user);
         setToken(user.accessToken);
         setIsLoggedIn(true);
-        user.getIdTokenResult().then((idTokenResult) => {
+        try {
+          const likes = await axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_API_URL}/likes`,
+            headers: {
+              Authorization: 'Bearer ' + user.accessToken,
+            },
+          });
+          const favorites = await axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_API_URL}/favorites`,
+            headers: {
+              Authorization: 'Bearer ' + user.accessToken,
+            },
+          });
+          console.log(likes, favorites);
+        } catch (e) {
+          console.log(e);
+        }
+        user.getIdTokenResult().then(async (idTokenResult) => {
           const role = idTokenResult.claims.stripeRole;
           setUser({
             id: user.uid,
@@ -81,7 +100,6 @@ export const AuthProvider = ({ children }) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const u = userCredential.user;
-        setUid(u.uid);
         if (u && u.emailVerified === false) {
           sendEmailVerification(u)
             .then(() => {
@@ -115,12 +133,9 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
-      const userCredentials = await firebase.auth().signInWithPopup(provider);
-      if (page === 'register') setUid(userCredentials.user.uid);
-      else {
-        setIsLoading(false);
-        after();
-      }
+      await firebase.auth().signInWithPopup(provider);
+      setIsLoading(false);
+      after();
     } catch (error) {
       setErrorMessage(authError(error.code));
       setIsLoading(false);

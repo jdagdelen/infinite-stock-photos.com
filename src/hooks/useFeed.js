@@ -37,7 +37,6 @@ export default function useFeed(feedPageNo, myCPageNo) {
           Authorization: 'Bearer ' + token,
         },
       });
-      console.log(data);
       setMyCreationsData((prevImagesData) => {
         return [...prevImagesData, ...data];
       });

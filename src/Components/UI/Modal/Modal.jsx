@@ -1,8 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Card, CardContent, Container } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  LinearProgress,
+} from '@mui/material';
 
-const Modal = ({ children, onClose, maxWidth = 'sm' }) => {
+const Modal = ({ children, onClose, maxWidth = 'sm', showLoader = false }) => {
   const backdrop = {
     initial: {
       backgroundColor: 'rgba(0,0,0,0)',
@@ -55,8 +61,15 @@ const Modal = ({ children, onClose, maxWidth = 'sm' }) => {
         exit='exit'
         sx={{ padding: '0 1em' }}
         maxWidth={maxWidth}
+        onClick={(e) => e.stopPropagation()}
       >
-        <Card>
+        <Card sx={{ position: 'relative' }}>
+          {showLoader && (
+            <LinearProgress
+              color='secondary'
+              sx={{ position: 'absolute', top: 0, width: '100%' }}
+            />
+          )}
           <CardContent>{children}</CardContent>
         </Card>
       </Container>

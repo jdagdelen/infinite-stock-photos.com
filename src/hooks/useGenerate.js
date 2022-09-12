@@ -1,10 +1,8 @@
 import { useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import useCredits from '../hooks/useCredits';
 import hash from 'object-hash';
 import useAuth from './useAuth';
-
 
 export default function useGenerate() {
   const [width, setWidth] = useState(512);
@@ -18,21 +16,17 @@ export default function useGenerate() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [imagesData, setImagesData] = useState([]);
   const [requiredPrompt, setRequiredPrompt] = useState(false);
+  const [showBuyCreditsModal, setShowBuyCreditsModal] = useState(false);
   const shownIndex = useRef(0);
   const index = useRef(0);
 
   const navigate = useNavigate();
 
   const { token, isLoggedIn, user } = useAuth();
-  const credits = useCredits().creditsRemaining;
 
   const generateImages = async () => {
     if (!isLoggedIn) {
       navigate('/sign-in');
-      return;
-    }
-    if (user.role !== 'premium' && credits < noOfImages) {
-      navigate('/manage-account');
       return;
     }
     setIsLoading(true);
@@ -41,7 +35,7 @@ export default function useGenerate() {
 
     setImagesData(newArray);
     index.current = 0;
-    const generation_session =`${user.id}${hash(prompt)}`;
+    const generation_session = `${user.id}${hash(prompt)}`;
     while (index.current < noOfImages) {
       try {
         const { data } = await axios({
@@ -94,5 +88,7 @@ export default function useGenerate() {
     imagesData,
     requiredPrompt,
     setRequiredPrompt,
+    showBuyCreditsModal,
+    setShowBuyCreditsModal,
   };
 }

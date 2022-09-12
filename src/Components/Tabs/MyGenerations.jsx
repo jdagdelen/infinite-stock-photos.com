@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Stack, CircularProgress, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 import FeedGrid from '../UI/FeedGrid/FeedGrid';
 import ScrollToTopButton from '../UI/ScrollToTopButton/ScrollToTopButton';
 import useAuth from '../../hooks/useAuth';
+import SkeletonFeedGrid from '../UI/SkeletonFeedGrid/SkeletonFeedGrid';
+import ImageComponent from '../UI/ImageComponent/ImageComponent';
 
 const MyGenerations = ({ setMyCPageNo, imagesData, isLoading }) => {
   const { isLoggedIn } = useAuth();
@@ -44,7 +46,9 @@ const MyGenerations = ({ setMyCPageNo, imagesData, isLoading }) => {
               key={i}
               generationDetails={data.generation_details}
               generationPrompt={data.generation_prompt}
-              images={data.image_urls}
+              images={data.image_urls.map((data, i) => (
+                <ImageComponent key={i} image={data} square />
+              ))}
               timestamp={data.timestamp}
             />
           ))
@@ -59,15 +63,8 @@ const MyGenerations = ({ setMyCPageNo, imagesData, isLoading }) => {
               No Previous Generations Found
             </Typography>
           )}
-      {isLoading && (
-        <Stack
-          direction='column'
-          alignItems='center'
-          sx={{ margin: '1em 0', overflow: 'hidden' }}
-        >
-          <CircularProgress />
-        </Stack>
-      )}
+      {isLoading &&
+        Array.from(Array(7).keys()).map((i) => <SkeletonFeedGrid key={i} />)}
       <ScrollToTopButton />
     </>
   );
