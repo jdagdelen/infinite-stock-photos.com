@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 
 import Header from './Components/UI/Header/Header';
 import { AuthProvider } from './contexts/AuthContext';
@@ -31,11 +31,14 @@ const theme = createTheme({
 
 const TRACKING_ID = process.env.REACT_APP_ANALYTICS_ID;
 ReactGA.initialize(TRACKING_ID);
+ReactGA.send({
+  hitType: 'pageview',
+  page: window.location.pathname + window.location.search,
+});
 
 function App() {
   useEffect(() => {
     document.title = 'Infinite Stock Photos';
-    ReactGA.pageview(window.location.pathname + window.location.search);
   }, []);
 
   return (
