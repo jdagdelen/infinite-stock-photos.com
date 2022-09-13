@@ -29,13 +29,16 @@ const theme = createTheme({
   },
 });
 
-const TRACKING_ID = process.env.REACT_APP_ANALYTICS_ID;
+const TRACKING_ID = "G-Q154MJ0PB0";
 ReactGA.initialize(TRACKING_ID);
-ReactGA.send('pageview');
 
 function App() {
   useEffect(() => {
     document.title = 'Infinite Stock Photos';
+  }, []);
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
   }, []);
 
   return (

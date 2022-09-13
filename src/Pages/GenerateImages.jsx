@@ -137,10 +137,12 @@ const GenerateImages = () => {
         description={
           <>
             {user.role && user.role === 'premium'
-              ? 'Unlimited Credits'
+              ? 'You have unlimited credits'
               : `${credits} Credits Left.`}
             <br />
-            Cost: 1 Credit per image
+            {user.role && user.role === 'premium'
+              ? ''
+              : `Cost: ${noOfImages} credits` }
           </>
         }
       />
