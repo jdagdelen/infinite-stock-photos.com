@@ -15,6 +15,7 @@ import {
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { useNavigate } from 'react-router-dom';
 
 import PlaceHolderImage from '../../../assets/product-image-placeholder.svg';
 import SocialShare from './SocialShare';
@@ -30,7 +31,8 @@ const FeedImageComponent = ({
   square,
 }) => {
   const { likeImage, favoriteImage } = useLike();
-  const { likes, favorites } = useAuth();
+  const { likes, favorites, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   const [showInfo, setShowInfo] = useState(false);
   const [showZoomed, setShowZoomed] = useState(false);
@@ -45,7 +47,6 @@ const FeedImageComponent = ({
   const [favoritedImage, setFavoritedImage] = useState(
     favorites.includes(image.split('/')[4])
   );
-
   const handleClick = (newPlacement) => (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => placement !== newPlacement || !prev);
@@ -64,6 +65,10 @@ const FeedImageComponent = ({
   };
 
   const likeThis = () => {
+    if (!isLoggedIn) {
+      navigate('/sign-in');
+      return;
+    }
     try {
       setLikesImage(!likesImage);
       likeImage(image.split('/')[4]);
@@ -71,6 +76,10 @@ const FeedImageComponent = ({
   };
 
   const favoriteThis = () => {
+    if (!isLoggedIn) {
+      navigate('/sign-in');
+      return;
+    }
     try {
       setFavoritedImage(!favoritedImage);
       favoriteImage(image.split('/')[4]);

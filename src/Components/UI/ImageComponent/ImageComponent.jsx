@@ -14,11 +14,13 @@ import {
   StarBorder,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 import PlaceHolderImage from '../../../assets/product-image-placeholder.svg';
 import SocialShare from './SocialShare';
 import ZoomedImage from './ZoomedImage';
 import useLike from '../../../hooks/useLike';
+import useAuth from '../../../hooks/useAuth';
 
 const ImageComponent = ({
   image,
@@ -33,11 +35,13 @@ const ImageComponent = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState();
+  const navigate = useNavigate();
   // const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [likesImage, setLikesImage] = useState(false);
   const [favoritedImage, setFavoritedImage] = useState(false);
   const { likeImage, favoriteImage } = useLike();
+  const { isLoggedIn } = useAuth();
   const handleClick = (newPlacement) => (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => placement !== newPlacement || !prev);
@@ -56,6 +60,10 @@ const ImageComponent = ({
   };
 
   const likeThis = () => {
+    if (!isLoggedIn) {
+      navigate('/sign-in');
+      return;
+    }
     try {
       setLikesImage(!likesImage);
       likeImage(image.split('/')[4]);
@@ -63,6 +71,10 @@ const ImageComponent = ({
   };
 
   const favoriteThis = () => {
+    if (!isLoggedIn) {
+      navigate('/sign-in');
+      return;
+    }
     try {
       setFavoritedImage(!favoritedImage);
       favoriteImage(image.split('/')[4]);
