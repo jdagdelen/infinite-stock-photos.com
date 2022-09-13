@@ -67,7 +67,6 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
 
   const grid = splitArray(imagesData, sections);
   const loaderGrid = splitArray(Array.from(Array(10).keys()), sections);
-  console.log(loaderGrid);
   return (
     <>
       <SearchBar

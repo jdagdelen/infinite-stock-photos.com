@@ -17,6 +17,7 @@ import { getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../config';
 import authError from '../utils/auth-error';
 import axios from 'axios';
+import { LinearProgress } from '@mui/material';
 
 export const app = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -37,32 +38,35 @@ export const AuthProvider = ({ children }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [likes, setLikes] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [initLoading, setInitLoading] = useState(false);
 
   useEffect(() => {
+    setInitLoading(true);
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
         setToken(user.accessToken);
         setIsLoggedIn(true);
         try {
-          const likes = await axios({
+          const { data: likes } = await axios({
             method: 'GET',
             url: `${process.env.REACT_APP_API_URL}/likes`,
             headers: {
               Authorization: 'Bearer ' + user.accessToken,
             },
           });
-          const favorites = await axios({
+          const { data: favorites } = await axios({
             method: 'GET',
             url: `${process.env.REACT_APP_API_URL}/favorites`,
             headers: {
               Authorization: 'Bearer ' + user.accessToken,
             },
           });
-          console.log(likes, favorites);
-        } catch (e) {
-          console.log(e);
-        }
+          setLikes(likes);
+          setFavorites(favorites);
+        } catch (e) {}
         user.getIdTokenResult().then(async (idTokenResult) => {
           const role = idTokenResult.claims.stripeRole;
           setUser({
@@ -72,11 +76,13 @@ export const AuthProvider = ({ children }) => {
             photoURL: user.photoURL,
             role,
           });
+          setInitLoading(false);
         });
       } else {
         setUser({});
         setIsLoggedIn(false);
         await firebase.auth().signOut();
+        setInitLoading(false);
       }
     });
   }, []);
@@ -159,8 +165,22 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         resetPassword,
         db,
+        likes,
+        favorites,
       }}
     >
+      {initLoading && (
+        <LinearProgress
+          color='secondary'
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            zIndex: 1000,
+          }}
+        />
+      )}
       {children}
     </AuthContext.Provider>
   );

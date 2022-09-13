@@ -14,30 +14,38 @@ import {
   StarBorder,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import PlaceHolderImage from '../../../assets/product-image-placeholder.svg';
 import SocialShare from './SocialShare';
 import ZoomedImage from './ZoomedImage';
 import useLike from '../../../hooks/useLike';
+import useAuth from '../../../hooks/useAuth';
 
-const ImageComponent = ({
+const FeedImageComponent = ({
   image,
   description,
   forwardedRef,
   isLoading,
   square,
 }) => {
+  const { likeImage, favoriteImage } = useLike();
+  const { likes, favorites } = useAuth();
+
   const [showInfo, setShowInfo] = useState(false);
   const [showZoomed, setShowZoomed] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState();
-  // const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [likesImage, setLikesImage] = useState(false);
-  const [favoritedImage, setFavoritedImage] = useState(false);
-  const { likeImage, favoriteImage } = useLike();
+  const [likesImage, setLikesImage] = useState(
+    likes.includes(image.split('/')[4])
+  );
+  const [favoritedImage, setFavoritedImage] = useState(
+    favorites.includes(image.split('/')[4])
+  );
+
   const handleClick = (newPlacement) => (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => placement !== newPlacement || !prev);
@@ -158,7 +166,8 @@ const ImageComponent = ({
           }}
         />
       )}
-      <img
+      <LazyLoadImage
+        effect='blur'
         src={image && isLoaded ? image : PlaceHolderImage}
         alt=''
         onClick={() => isLoaded && setShowZoomed(!showZoomed)}
@@ -167,7 +176,6 @@ const ImageComponent = ({
           setIsLoaded(true);
         }}
         width='100%'
-        loading='lazy'
       />
       <AnimatePresence>
         {showZoomed && image && (
@@ -181,4 +189,4 @@ const ImageComponent = ({
   );
 };
 
-export default ImageComponent;
+export default FeedImageComponent;
