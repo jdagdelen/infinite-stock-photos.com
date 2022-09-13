@@ -1,63 +1,11 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import useAuth from './useAuth';
+import { useContext } from 'react';
 
-export default function useFeed(feedPageNo, myCPageNo) {
-  const [imagesData, setImagesData] = useState([]);
-  const [myCreationsData, setMyCreationsData] = useState([]);
-  const [feedLoading, setFeedLoading] = useState(false);
-  const [creationLoading, setCreationLoading] = useState(false);
+import FeedContext from '../contexts/FeedContext';
 
-  const { token } = useAuth();
+export default function useFeed() {
+  const context = useContext(FeedContext);
 
-  const getFeedData = async () => {
-    try {
-      const { data } = await axios({
-        method: 'GET',
-        url: `${process.env.REACT_APP_API_URL}/recent`,
-        params: { hits: 40, offset: (feedPageNo - 1) * 40 },
-      });
-      setFeedLoading(false);
-      setImagesData((prevImagesData) => {
-        return [...prevImagesData, ...data];
-      });
-    } catch (e) {
-      setFeedLoading(false);
-      return;
-    }
-  };
+  if (!context) throw new Error('context must be use inside provider');
 
-  const getMyCreations = async () => {
-    try {
-      const { data } = await axios({
-        method: 'GET',
-        url: `${process.env.REACT_APP_API_URL}/generation_history`,
-        params: { hits: 40, offset: (myCPageNo - 1) * 40 },
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      });
-      setMyCreationsData((prevImagesData) => {
-        return [...prevImagesData, ...data];
-      });
-      setCreationLoading(false);
-    } catch (e) {
-      setCreationLoading(false);
-      return;
-    }
-  };
-
-  useEffect(() => {
-    setFeedLoading(true);
-    getFeedData();
-  }, [feedPageNo]);
-
-  useEffect(() => {
-    if (token) {
-      setCreationLoading(true);
-      getMyCreations();
-    }
-  }, [myCPageNo, token]);
-
-  return { imagesData, feedLoading, myCreationsData, creationLoading };
+  return context;
 }
