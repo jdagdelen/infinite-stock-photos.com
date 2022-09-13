@@ -31,10 +31,7 @@ const theme = createTheme({
 
 const TRACKING_ID = process.env.REACT_APP_ANALYTICS_ID;
 ReactGA.initialize(TRACKING_ID);
-ReactGA.send({
-  hitType: 'pageview',
-  page: window.location.pathname + window.location.search,
-});
+ReactGA.send('pageview');
 
 function App() {
   useEffect(() => {
