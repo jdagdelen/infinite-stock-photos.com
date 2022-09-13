@@ -8,7 +8,7 @@ export default function useGenerate() {
   const [width, setWidth] = useState(512);
   const [height, setHeight] = useState(512);
   const [promptWeighting, setPromptWeighting] = useState(5);
-  const [noOfImages, setNoOfImages] = useState(1);
+  const [noOfImages, setNoOfImages] = useState(4);
   const [seed, setSeed] = useState('');
   const [useSeed, setUseSeed] = useState(false);
   const [prompt, setPrompt] = useState('');

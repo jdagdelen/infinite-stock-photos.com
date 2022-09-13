@@ -23,6 +23,7 @@ import useAuth from '../hooks/useAuth';
 import AuthGuard from '../utils/AuthGuard';
 import useStripe from '../hooks/useStripe';
 import { CheckBox } from '@mui/icons-material';
+import useAnalyticsEventTracker from '../hooks/useAnalytics';
 
 const ManageAccount = () => {
   useEffect(() => {
@@ -38,7 +39,7 @@ const ManageAccount = () => {
     user.role ? user.role : 'basic'
   );
   const { purchase, subscribe } = useStripe();
-
+  
   const planModal = (
     <Modal
       key='planModal'
