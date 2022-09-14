@@ -33,14 +33,12 @@ import { useNavigate } from 'react-router-dom';
 import NavigationLink from './NavigationLink';
 import MobileNavigationLink from './MobileNavigationLink';
 import useAuth from '../../../hooks/useAuth';
-import useCredits from '../../../hooks/useCredits';
 
 const drawerWidth = 240;
 
 const Header = (props) => {
-  const { isLoggedIn, logout, user } = useAuth();
+  const { isLoggedIn, logout, user, credits } = useAuth();
   const navigate = useNavigate();
-  const credits = useCredits().creditsRemaining;
 
   const links = isLoggedIn
     ? [

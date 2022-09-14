@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios';
-import { createContext, useState, useEffect, useRef, useContext } from 'react';
+import { createContext, useState, useEffect, useRef } from 'react';
 import useAuth from '../hooks/useAuth';
 
 const FeedContext = createContext(null);

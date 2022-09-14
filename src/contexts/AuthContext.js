@@ -13,11 +13,11 @@ import {
   sendPasswordResetEmail,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { LinearProgress } from '@mui/material';
+import axios from 'axios';
 
 import { firebaseConfig } from '../config';
 import authError from '../utils/auth-error';
-import axios from 'axios';
-import { LinearProgress } from '@mui/material';
 
 export const app = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
   const [likes, setLikes] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [initLoading, setInitLoading] = useState(false);
+  const [credits, setCredits] = useState(0);
 
   useEffect(() => {
     setInitLoading(true);
@@ -76,6 +77,7 @@ export const AuthProvider = ({ children }) => {
             photoURL: user.photoURL,
             role,
           });
+          updateCredits();
           setInitLoading(false);
         });
       } else {
@@ -149,6 +151,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateCredits = async () => {
+    if (token) {
+      try {
+        const { data } = await axios({
+          method: 'GET',
+          url: `${process.env.REACT_APP_API_URL}/credits`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCredits(data);
+      } catch (e) {}
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -167,6 +184,8 @@ export const AuthProvider = ({ children }) => {
         db,
         likes,
         favorites,
+        updateCredits,
+        credits,
       }}
     >
       {initLoading && (
