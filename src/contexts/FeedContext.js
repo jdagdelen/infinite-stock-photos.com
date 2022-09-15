@@ -100,6 +100,39 @@ export const FeedProvider = ({ children }) => {
     }
   };
 
+  const getLatestFeedData = async () => {
+    try {
+      const { data } = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_API_URL}/recent`,
+        params: { hits: 40, offset: (feedPageNo - 1) * 40 },
+      });
+      setFeedLoading(false);
+      setImagesData(data);
+    } catch (e) {
+      setFeedLoading(false);
+      return;
+    }
+  };
+
+  const getLatestCreations = async () => {
+    try {
+      const { data } = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_API_URL}/generation_history`,
+        params: { hits: 40, offset: (myCPageNo - 1) * 40 },
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      });
+      setMyCreationsData(data);
+      setCreationLoading(false);
+    } catch (e) {
+      setCreationLoading(false);
+      return;
+    }
+  };
+
   useEffect(() => {
     setFeedLoading(true);
     getFeedData();
@@ -121,6 +154,8 @@ export const FeedProvider = ({ children }) => {
         creationLoading,
         setLastFeedElement,
         setLastGenerationElement,
+        getLatestCreations,
+        getLatestFeedData,
       }}
     >
       {children}
