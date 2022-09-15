@@ -15,13 +15,15 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
   const [sections, setSections] = useState(4);
   const [lastElement, setLastElement] = useState(null);
   const [width, setWidth] = useState('');
+  const enabled = useRef(false);
   const theme = useTheme();
   const observer = useRef(
     new IntersectionObserver((entries) => {
       const first = entries[0];
-      if (first.isIntersecting) {
+      if (first.isIntersecting && enabled.current) {
         setPageNo((no) => no + 1);
       }
+      if (!enabled.current) setTimeout(() => (enabled.current = true), 1000);
     })
   );
   useEffect(() => {
@@ -66,7 +68,7 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
   };
 
   const grid = splitArray(imagesData, sections);
-  const loaderGrid = splitArray(Array.from(Array(10).keys()), sections);
+  const loaderGrid = splitArray(Array.from(Array(15).keys()), sections);
   return (
     <>
       <SearchBar
@@ -80,12 +82,12 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
 
       {grid && grid[0].length > 0 ? (
         <Stack direction='row'>
-          {grid?.map((col, index) => (
+          {grid?.slice(0, sections).map((col, index) => (
             <Grid container key={index} direction='column' sx={{ width }}>
               {col.map((data, i) => (
                 <ImageComponent
                   forwardedRef={
-                    index === grid.length - 1
+                    index === 0
                       ? col.length === i + 1
                         ? setLastElement
                         : null
@@ -111,6 +113,7 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
           </Typography>
         )
       )}
+
       {isLoading && (
         <Stack direction='row'>
           {loaderGrid?.map((col, index) => (
