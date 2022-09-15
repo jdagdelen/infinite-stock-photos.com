@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import hash from 'object-hash';
 import useAuth from './useAuth';
+import useFeed from './useFeed';
 
 export default function useGenerate() {
   const [width, setWidth] = useState(512);
@@ -21,7 +22,7 @@ export default function useGenerate() {
   const index = useRef(0);
 
   const navigate = useNavigate();
-
+  const { getLatestFeedData, getLatestCreations } = useFeed();
   const { token, isLoggedIn, user, updateCredits } = useAuth();
 
   const generateImages = async () => {
@@ -68,6 +69,8 @@ export default function useGenerate() {
     setImagesData(newArray);
     await updateCredits();
     setIsLoading(false);
+    await getLatestFeedData();
+    await getLatestCreations();
   };
 
   return {
