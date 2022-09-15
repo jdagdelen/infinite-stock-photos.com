@@ -80,12 +80,12 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
 
       {grid && grid[0].length > 0 ? (
         <Stack direction='row'>
-          {grid?.map((col, index) => (
+          {grid?.slice(0, sections).map((col, index) => (
             <Grid container key={index} direction='column' sx={{ width }}>
               {col.map((data, i) => (
                 <ImageComponent
                   forwardedRef={
-                    index === grid.length - 1
+                    index === 0
                       ? col.length === i + 1
                         ? setLastElement
                         : null
@@ -111,6 +111,7 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
           </Typography>
         )
       )}
+
       {isLoading && (
         <Stack direction='row'>
           {loaderGrid?.map((col, index) => (
