@@ -84,7 +84,13 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
             <Grid container key={index} direction='column' sx={{ width }}>
               {col.map((data, i) => (
                 <ImageComponent
-                  forwardedRef={col.length === i + 1 ? setLastElement : null}
+                  forwardedRef={
+                    index === grid.length - 1
+                      ? col.length === i + 1
+                        ? setLastElement
+                        : null
+                      : null
+                  }
                   key={i}
                   image={data.fields.image_url}
                   description={
