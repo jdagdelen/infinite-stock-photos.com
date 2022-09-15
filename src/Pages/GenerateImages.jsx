@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Close, Settings } from '@mui/icons-material';
 import { AnimatePresence } from 'framer-motion';
 
@@ -24,7 +24,6 @@ import CustomSlider from '../Components/UI/CustomSlider/CustomSlider';
 import ImageComponent from '../Components/UI/ImageComponent/ImageComponent';
 import Modal from '../Components/UI/Modal/Modal';
 import useGenerate from '../hooks/useGenerate';
-import useCredits from '../hooks/useCredits';
 import useAuth from '../hooks/useAuth';
 
 const GenerateImages = () => {
@@ -54,8 +53,8 @@ const GenerateImages = () => {
     setShowBuyCreditsModal,
   } = useGenerate();
   const [searchParams] = useSearchParams();
-  const credits = useCredits().creditsRemaining;
-  const { user } = useAuth();
+  const { user, isLoggedIn, credits } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'Generate Images';
@@ -142,7 +141,7 @@ const GenerateImages = () => {
             <br />
             {user.role && user.role === 'premium'
               ? ''
-              : `Cost: ${noOfImages} credits` }
+              : `Cost: ${noOfImages} credits`}
           </>
         }
       />
@@ -205,11 +204,15 @@ const GenerateImages = () => {
   );
 
   const generateOnClick = () => {
+    if (!isLoggedIn) {
+      navigate('/sign-in');
+      return;
+    }
     if (!prompt) {
       setRequiredPrompt(true);
       return;
     }
-    if (credits === 0 && user.role && user.role !== 'premium') {
+    if (credits === 0 && user.role !== 'premium') {
       setShowBuyCreditsModal(true);
       return;
     }

@@ -22,7 +22,7 @@ export default function useGenerate() {
 
   const navigate = useNavigate();
 
-  const { token, isLoggedIn, user } = useAuth();
+  const { token, isLoggedIn, user, updateCredits } = useAuth();
 
   const generateImages = async () => {
     if (!isLoggedIn) {
@@ -57,12 +57,16 @@ export default function useGenerate() {
           },
         });
         newArray[shownIndex.current] = data;
-        if (index === noOfImages - 1) setIsLoading(false);
+        if (index === noOfImages - 1) {
+          await updateCredits();
+          setIsLoading(false);
+        }
       } catch (e) {}
       shownIndex.current++;
       index.current++;
     }
     setImagesData(newArray);
+    await updateCredits();
     setIsLoading(false);
   };
 
