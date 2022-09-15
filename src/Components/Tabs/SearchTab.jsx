@@ -15,13 +15,15 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
   const [sections, setSections] = useState(4);
   const [lastElement, setLastElement] = useState(null);
   const [width, setWidth] = useState('');
+  const enabled = useRef(false);
   const theme = useTheme();
   const observer = useRef(
     new IntersectionObserver((entries) => {
       const first = entries[0];
-      if (first.isIntersecting) {
+      if (first.isIntersecting && enabled.current) {
         setPageNo((no) => no + 1);
       }
+      if (!enabled.current) setTimeout(() => (enabled.current = true), 1000);
     })
   );
   useEffect(() => {
@@ -66,7 +68,7 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
   };
 
   const grid = splitArray(imagesData, sections);
-  const loaderGrid = splitArray(Array.from(Array(10).keys()), sections);
+  const loaderGrid = splitArray(Array.from(Array(15).keys()), sections);
   return (
     <>
       <SearchBar
