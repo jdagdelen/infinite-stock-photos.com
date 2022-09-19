@@ -154,14 +154,14 @@ export const AuthProvider = ({ children }) => {
   const updateCredits = async () => {
     if (token) {
       try {
-        const { data } = await axios({
+        const res = await axios({
           method: 'GET',
           url: `${process.env.REACT_APP_API_URL}/credits`,
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setCredits(data);
+        setCredits(res.data);
       } catch (e) {}
     }
   };
