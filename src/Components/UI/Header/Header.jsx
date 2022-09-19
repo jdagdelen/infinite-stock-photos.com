@@ -33,11 +33,13 @@ import { useNavigate } from 'react-router-dom';
 import NavigationLink from './NavigationLink';
 import MobileNavigationLink from './MobileNavigationLink';
 import useAuth from '../../../hooks/useAuth';
+import useCredits from '../../../hooks/useCredits';
 
 const drawerWidth = 240;
 
 const Header = (props) => {
   const { isLoggedIn, logout, user, credits } = useAuth();
+  const {getCredits} = useCredits();
   const navigate = useNavigate();
 
   const links = isLoggedIn
@@ -223,7 +225,7 @@ const Header = (props) => {
                   <Typography marginY='0.5em'>
                     {user.role && user.role === 'premium'
                       ? 'Credits: Unlimited'
-                      : `Credits: ${credits}`}
+                      : `Credits: ${getCredits()}`}
                   </Typography>
                 </Stack>
                 <MenuItem onClick={() => navigate('/manage-account')}>

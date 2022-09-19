@@ -67,7 +67,9 @@ export const AuthProvider = ({ children }) => {
           });
           setLikes(likes);
           setFavorites(favorites);
-        } catch (e) {}
+        } catch (e) {
+          console.log(e);
+        }
         user.getIdTokenResult().then(async (idTokenResult) => {
           const role = idTokenResult.claims.stripeRole;
           setUser({
@@ -162,7 +164,9 @@ export const AuthProvider = ({ children }) => {
           },
         });
         setCredits(res.data);
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
