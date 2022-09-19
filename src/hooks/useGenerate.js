@@ -18,6 +18,8 @@ export default function useGenerate() {
   const [imagesData, setImagesData] = useState([]);
   const [requiredPrompt, setRequiredPrompt] = useState(false);
   const [showBuyCreditsModal, setShowBuyCreditsModal] = useState(false);
+  const [showVerifyAccountModal, setShowVerifyAccountModal] = useState(false);
+
   const shownIndex = useRef(0);
   const index = useRef(0);
 
@@ -97,5 +99,7 @@ export default function useGenerate() {
     setRequiredPrompt,
     showBuyCreditsModal,
     setShowBuyCreditsModal,
+    showVerifyAccountModal, 
+    setShowVerifyAccountModal
   };
 }

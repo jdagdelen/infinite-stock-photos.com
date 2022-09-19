@@ -51,9 +51,11 @@ const GenerateImages = () => {
     setRequiredPrompt,
     showBuyCreditsModal,
     setShowBuyCreditsModal,
+    showVerifyAccountModal,
+    setShowVerifyAccountModal,
   } = useGenerate();
   const [searchParams] = useSearchParams();
-  const { user, isLoggedIn, credits } = useAuth();
+  const { user, isLoggedIn, credits, emailVerified } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -212,6 +214,10 @@ const GenerateImages = () => {
       setRequiredPrompt(true);
       return;
     }
+    if (!emailVerified) {
+      setShowVerifyAccountModal(true);
+      return;
+    }
     if (credits === 0 && user.role !== 'premium') {
       setShowBuyCreditsModal(true);
       return;
@@ -340,7 +346,23 @@ const GenerateImages = () => {
               Insufficient Credits
             </Typography>
             <Typography variant='h6' align='center'>
-              Buy More to generate more images
+              Buy more credits to generate images
+            </Typography>
+          </Modal>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showVerifyAccountModal && (
+          <Modal
+            key='VerifyAccountModal'
+            onClose={() => setShowVerifyAccountModal(!setShowVerifyAccountModal)}
+          >
+            <Typography variant='h3' align='center'>
+              Unverified Account!
+            </Typography>
+            <Typography variant='h6' align='center'>
+              Please verify you account using the link sent to your email.
+              If you have verified, plese refresh the page.
             </Typography>
           </Modal>
         )}

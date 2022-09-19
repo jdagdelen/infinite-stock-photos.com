@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
   const [initLoading, setInitLoading] = useState(false);
   const [credits, setCredits] = useState(0);
+  const [emailVerified, setEmailVerified] = useState(false);
 
   useEffect(() => {
     setInitLoading(true);
@@ -50,6 +51,7 @@ export const AuthProvider = ({ children }) => {
         setUser(user);
         setToken(user.accessToken);
         setIsLoggedIn(true);
+        setEmailVerified(user.emailVerified);
         try {
           const { data: likes } = await axios({
             method: 'GET',
@@ -190,6 +192,7 @@ export const AuthProvider = ({ children }) => {
         favorites,
         updateCredits,
         credits,
+        emailVerified,
       }}
     >
       {initLoading && (
