@@ -1,52 +1,40 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { Stack, Grid, useTheme, Typography } from '@mui/material';
+import { Stack, Grid, useTheme, Typography, Box } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 
 import SearchBar from '../UI/SearchBar/SearchBar';
 import ImageComponent from '../UI/ImageComponent/ImageComponent';
 import ScrollToTopButton from '../UI/ScrollToTopButton/ScrollToTopButton';
 import splitArray from '../../utils/split-array';
+import { useInView } from 'react-intersection-observer';
+import useSearch from '../../hooks/useSearch';
 
-const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
+const SearchTab = () => {
+  const [pageNo, setPageNo] = useState(1);
+  const { imagesData, isLoading } = useSearch(pageNo, setPageNo);
   const [searchParams, setSearchParams] = useSearchParams();
   const prompt = searchParams.get('prompt');
   const [query, setQuery] = useState(prompt ?? '');
   const [sections, setSections] = useState(4);
-  const [lastElement, setLastElement] = useState(null);
+  const firstRender = useRef(true);
+  const { ref, inView } = useInView({
+    threshold: 1,
+    delay: 1000,
+  });
   const [width, setWidth] = useState('');
-  const enabled = useRef(false);
-  const theme = useTheme();
-  const observer = useRef(
-    new IntersectionObserver((entries) => {
-      const first = entries[0];
-      if (first.isIntersecting && enabled.current) {
-        setPageNo((no) => no + 1);
-      }
-      if (!enabled.current) setTimeout(() => (enabled.current = true), 1000);
-    })
+  const [grid, setGrid] = useState([]);
+  const [loaderGrid] = useState(
+    splitArray(Array.from(Array(15).keys()), sections)
   );
-  useEffect(() => {
-    const currentElement = lastElement;
-    const currentObserver = observer.current;
-
-    if (currentElement) {
-      currentObserver.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        currentObserver.unobserve(currentElement);
-      }
-    };
-  }, [lastElement]);
+  const theme = useTheme();
 
   useEffect(() => {
     document.title = 'Search';
-    changeSecitons(theme);
-  }, [theme]);
+    changeSecitons();
+  }, []);
 
-  const changeSecitons = (theme) => {
+  const changeSecitons = () => {
     const w = window.innerWidth;
     const breakpoint = theme.breakpoints.values;
     const isBetween = (start, end) =>
@@ -67,8 +55,22 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
     }
   };
 
-  const grid = splitArray(imagesData, sections);
-  const loaderGrid = splitArray(Array.from(Array(15).keys()), sections);
+  useEffect(() => {
+    setGrid(splitArray(imagesData, sections));
+  }, [imagesData]);
+
+  useEffect(() => {
+    console.log('In View', inView);
+    console.log('First Render', firstRender.current);
+    if (
+      inView &&
+      (prompt !== '' || prompt || prompt !== null) &&
+      !firstRender.current
+    )
+      setPageNo((prev) => (prev += 1));
+    else firstRender.current = false;
+  }, [inView]);
+
   return (
     <>
       <SearchBar
@@ -76,23 +78,18 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
         onChange={({ target }) => setQuery(target.value)}
         onClick={(e) => {
           if (e) e.preventDefault();
+          firstRender.current = true;
+          setPageNo(1);
           setSearchParams({ prompt: query }, { replace: true });
         }}
       />
 
-      {grid && grid[0].length > 0 ? (
-        <Stack direction='row'>
+      {grid && grid[0]?.length > 0 ? (
+        <Stack direction='row' flexWrap='wrap' maxWidth='100vw'>
           {grid?.slice(0, sections).map((col, index) => (
             <Grid container key={index} direction='column' sx={{ width }}>
               {col.map((data, i) => (
                 <ImageComponent
-                  forwardedRef={
-                    index === 0
-                      ? col.length === i + 1
-                        ? setLastElement
-                        : null
-                      : null
-                  }
                   key={i}
                   image={data.fields.image_url}
                   description={
@@ -125,6 +122,7 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
           ))}
         </Stack>
       )}
+      <Box ref={ref} />
       <ScrollToTopButton />
     </>
   );

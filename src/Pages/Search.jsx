@@ -7,14 +7,9 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import React, { useState } from 'react';
 
 import SearchTab from '../Components/Tabs/SearchTab';
-import FavoritesTab from '../Components/Tabs/FavoritesTab';
-
-import useSearch from '../hooks/useSearch';
 
 const Search = () => {
   const [tabValue, setTabValue] = useState('1');
-  const [pageNo, setPageNo] = useState(1);
-  const { imagesData, isLoading } = useSearch(pageNo, setPageNo);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -33,11 +28,7 @@ const Search = () => {
           {/* <Tab label='My Favorites' value='2' /> */}
         </TabList>
         <TabPanel value='1'>
-          <SearchTab
-            imagesData={imagesData}
-            isLoading={isLoading}
-            setPageNo={setPageNo}
-          />
+          <SearchTab />
         </TabPanel>
         {/* <TabPanel value='2'>
           <FavoritesTab />
