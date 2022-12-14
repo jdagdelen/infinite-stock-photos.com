@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { Stack, Grid, useTheme, Typography, Box } from '@mui/material';
+import {
+  Stack,
+  Grid,
+  useTheme,
+  Typography,
+  Box,
+  useMediaQuery,
+} from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 
 import SearchBar from '../UI/SearchBar/SearchBar';
@@ -16,52 +23,68 @@ const SearchTab = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const prompt = searchParams.get('prompt');
   const [query, setQuery] = useState(prompt ?? '');
-  const [sections, setSections] = useState(4);
   const firstRender = useRef(true);
   const { ref, inView } = useInView({
     threshold: 1,
     delay: 1000,
   });
-  const [width, setWidth] = useState('');
-  const [grid, setGrid] = useState([]);
-  const [loaderGrid] = useState(
-    splitArray(Array.from(Array(15).keys()), sections)
-  );
+  // const [width, setWidth] = useState('');
+  // const [loaderGrid] = useState(
+  // splitArray(Array.from(Array(15).keys()), sections)
+  // );
   const theme = useTheme();
+  const XSorMD = useMediaQuery(theme.breakpoints.between('xs', 'md'));
+  const MDorLG = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const LGorXL = useMediaQuery(theme.breakpoints.between('lg', 'xl'));
+  const moreThanXL = useMediaQuery(theme.breakpoints.up('xl'));
 
   useEffect(() => {
     document.title = 'Search';
-    changeSecitons();
   }, []);
 
-  const changeSecitons = () => {
-    const w = window.innerWidth;
-    const breakpoint = theme.breakpoints.values;
-    const isBetween = (start, end) =>
-      breakpoint[start] <= w && breakpoint[end] > w;
+  // const changeSecitons = () => {
+  //   const w = window.innerWidth;
+  //   const breakpoint = theme.breakpoints.values;
+  //   const isBetween = (start, end) =>
+  //     breakpoint[start] <= w && breakpoint[end] > w;
 
-    if (isBetween('xs', 'md')) {
-      setSections(1);
-      setWidth('100%');
-    } else if (isBetween('md', 'lg')) {
-      setSections(2);
-      setWidth('50%');
-    } else if (isBetween('lg', 'xl')) {
-      setSections(4);
-      setWidth('25%');
-    } else if (breakpoint['xl'] < w) {
-      setSections(5);
-      setWidth('20%');
-    }
-  };
+  //   if (isBetween('xs', 'md')) {
+  //     setSections(1);
+  //     setWidth('100%');
+  //   } else if (isBetween('md', 'lg')) {
+  //     setSections(2);
+  //     setWidth('50%');
+  //   } else if (isBetween('lg', 'xl')) {
+  //     setSections(4);
+  //     setWidth('25%');
+  //   } else if (breakpoint['xl'] < w) {
+  //     setSections(5);
+  //     setWidth('20%');
+  //   }
+  // };
+
+  let loaderGrid;
+  let width;
+  let grid;
+  if (XSorMD) {
+    width = '100%';
+    grid = splitArray(imagesData, 1);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 1);
+  } else if (MDorLG) {
+    width = '50%';
+    grid = splitArray(imagesData, 2);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 2);
+  } else if (LGorXL) {
+    width = '25%';
+    grid = splitArray(imagesData, 4);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 4);
+  } else if (moreThanXL) {
+    width = '20%';
+    grid = splitArray(imagesData, 5);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 5);
+  }
 
   useEffect(() => {
-    setGrid(splitArray(imagesData, sections));
-  }, [imagesData]);
-
-  useEffect(() => {
-    console.log('In View', inView);
-    console.log('First Render', firstRender.current);
     if (
       inView &&
       (prompt !== '' || prompt || prompt !== null) &&
@@ -86,7 +109,7 @@ const SearchTab = () => {
 
       {grid && grid[0]?.length > 0 ? (
         <Stack direction='row' flexWrap='wrap' maxWidth='100vw'>
-          {grid?.slice(0, sections).map((col, index) => (
+          {grid?.map((col, index) => (
             <Grid container key={index} direction='column' sx={{ width }}>
               {col.map((data, i) => (
                 <ImageComponent
@@ -111,7 +134,7 @@ const SearchTab = () => {
         )
       )}
 
-      {isLoading && (
+      {isLoading && prompt && (
         <Stack direction='row'>
           {loaderGrid?.map((col, index) => (
             <Grid container key={index} direction='column' sx={{ width }}>
@@ -122,7 +145,14 @@ const SearchTab = () => {
           ))}
         </Stack>
       )}
-      <Box ref={ref} />
+      <Box
+        ref={ref}
+        sx={{
+          bgcolor: 'transparent',
+          width: 10,
+          height: 10,
+        }}
+      />
       <ScrollToTopButton />
     </>
   );

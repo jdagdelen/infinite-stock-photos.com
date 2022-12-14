@@ -10,6 +10,10 @@ export default function useSearch(pageNo, setPageNo) {
   const prevPrompt = useRef();
 
   useEffect(() => {
+    setIsLoading(true);
+  }, [pageNo]);
+
+  useEffect(() => {
     const prompt = searchParams.get('prompt');
     if (prompt) {
       if (prompt !== prevPrompt.current) {
@@ -19,7 +23,6 @@ export default function useSearch(pageNo, setPageNo) {
       prevPrompt.current = prompt;
 
       setIsLoading(true);
-      console.log('Page No', pageNo);
       axios({
         method: 'GET',
         url: `${process.env.REACT_APP_API_URL}/search`,
