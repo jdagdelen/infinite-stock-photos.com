@@ -37,6 +37,7 @@ const SearchTab = () => {
   const MDorLG = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const LGorXL = useMediaQuery(theme.breakpoints.between('lg', 'xl'));
   const moreThanXL = useMediaQuery(theme.breakpoints.up('xl'));
+  const delay = useRef(true);
 
   useEffect(() => {
     document.title = 'Search';
@@ -76,11 +77,11 @@ const SearchTab = () => {
     loaderGrid = splitArray(Array.from(Array(15).keys()), 2);
   } else if (LGorXL) {
     width = '25%';
-    grid = splitArray(imagesData, 4);
+    grid = splitArray(imagesData, 3);
     loaderGrid = splitArray(Array.from(Array(15).keys()), 4);
   } else if (moreThanXL) {
     width = '20%';
-    grid = splitArray(imagesData, 5);
+    grid = splitArray(imagesData, 4);
     loaderGrid = splitArray(Array.from(Array(15).keys()), 5);
   }
 
@@ -88,12 +89,16 @@ const SearchTab = () => {
     if (
       inView &&
       (prompt !== '' || prompt || prompt !== null) &&
-      !firstRender.current
-    )
+      !firstRender.current &&
+      !delay.current
+    ) {
       setPageNo((prev) => (prev += 1));
-    else firstRender.current = false;
+      delay.current = true;
+    } else firstRender.current = false;
+    setTimeout(() => (delay.current = false), 300);
   }, [inView]);
 
+  console.log(grid);
   return (
     <>
       <SearchBar
@@ -108,23 +113,50 @@ const SearchTab = () => {
       />
 
       {grid && grid[0]?.length > 0 ? (
-        <Stack direction='row' flexWrap='wrap' maxWidth='100vw'>
+        <Grid container direction='row' maxWidth='100%'>
           {grid?.map((col, index) => (
-            <Grid container key={index} direction='column' sx={{ width }}>
-              {col.map((data, i) => (
-                <ImageComponent
-                  key={i}
-                  image={data.fields.image_url}
-                  description={
-                    data.fields?.generation_prompt !== 'None' &&
-                    data.fields?.generation_prompt
-                  }
-                  square
-                />
-              ))}
+            <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
+              <Grid
+                container
+                direction='column'
+                width='100%'
+                // sx={{ width }}
+              >
+                {col.map((data, i) => (
+                  <ImageComponent
+                    forwardedRef={
+                      XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref mobile')
+                          ref
+                        : !XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref pc')
+
+                          ref
+                        : null
+                    }
+                    test={
+                      XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref mobile')
+                          true
+                        : !XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref pc')
+
+                          true
+                        : false
+                    }
+                    key={i}
+                    image={data.fields.image_url}
+                    description={
+                      data.fields?.generation_prompt !== 'None' &&
+                      data.fields?.generation_prompt
+                    }
+                    square
+                  />
+                ))}
+              </Grid>
             </Grid>
           ))}
-        </Stack>
+        </Grid>
       ) : (
         !isLoading &&
         prompt && (
@@ -145,14 +177,13 @@ const SearchTab = () => {
           ))}
         </Stack>
       )}
-      <Box
-        ref={ref}
+      {/* <Box
         sx={{
           bgcolor: 'transparent',
           width: 10,
           height: 10,
         }}
-      />
+      /> */}
       <ScrollToTopButton />
     </>
   );

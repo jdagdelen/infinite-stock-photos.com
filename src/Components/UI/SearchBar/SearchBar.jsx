@@ -6,7 +6,7 @@ const SearchBar = ({ onChange, value, onClick }) => {
   return (
     <form onSubmit={onClick}>
       <Container maxWidth='xl' sx={{ padding: '1em 1em' }}>
-        <Grid container direction='row' alignItems='center'>
+        <Grid container direction='row' wrap='nowrap' alignItems='center'>
           <Grid item flexGrow={1}>
             <TextField
               value={value}
