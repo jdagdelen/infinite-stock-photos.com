@@ -1,74 +1,104 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { Stack, Grid, useTheme, Typography } from '@mui/material';
+import {
+  Stack,
+  Grid,
+  useTheme,
+  Typography,
+  Box,
+  useMediaQuery,
+} from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 
 import SearchBar from '../UI/SearchBar/SearchBar';
 import ImageComponent from '../UI/ImageComponent/ImageComponent';
 import ScrollToTopButton from '../UI/ScrollToTopButton/ScrollToTopButton';
 import splitArray from '../../utils/split-array';
+import { useInView } from 'react-intersection-observer';
+import useSearch from '../../hooks/useSearch';
 
-const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
+const SearchTab = () => {
+  const [pageNo, setPageNo] = useState(1);
+  const { imagesData, isLoading } = useSearch(pageNo, setPageNo);
   const [searchParams, setSearchParams] = useSearchParams();
   const prompt = searchParams.get('prompt');
   const [query, setQuery] = useState(prompt ?? '');
-  const [sections, setSections] = useState(4);
-  const [lastElement, setLastElement] = useState(null);
-  const [width, setWidth] = useState('');
-  const enabled = useRef(false);
+  const firstRender = useRef(true);
+  const { ref, inView } = useInView({
+    threshold: 1,
+    delay: 1000,
+  });
+  // const [width, setWidth] = useState('');
+  // const [loaderGrid] = useState(
+  // splitArray(Array.from(Array(15).keys()), sections)
+  // );
   const theme = useTheme();
-  const observer = useRef(
-    new IntersectionObserver((entries) => {
-      const first = entries[0];
-      if (first.isIntersecting && enabled.current) {
-        setPageNo((no) => no + 1);
-      }
-      if (!enabled.current) setTimeout(() => (enabled.current = true), 1000);
-    })
-  );
-  useEffect(() => {
-    const currentElement = lastElement;
-    const currentObserver = observer.current;
-
-    if (currentElement) {
-      currentObserver.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        currentObserver.unobserve(currentElement);
-      }
-    };
-  }, [lastElement]);
+  const XSorMD = useMediaQuery(theme.breakpoints.between('xs', 'md'));
+  const MDorLG = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const LGorXL = useMediaQuery(theme.breakpoints.between('lg', 'xl'));
+  const moreThanXL = useMediaQuery(theme.breakpoints.up('xl'));
+  const delay = useRef(true);
 
   useEffect(() => {
     document.title = 'Search';
-    changeSecitons(theme);
-  }, [theme]);
+  }, []);
 
-  const changeSecitons = (theme) => {
-    const w = window.innerWidth;
-    const breakpoint = theme.breakpoints.values;
-    const isBetween = (start, end) =>
-      breakpoint[start] <= w && breakpoint[end] > w;
+  // const changeSecitons = () => {
+  //   const w = window.innerWidth;
+  //   const breakpoint = theme.breakpoints.values;
+  //   const isBetween = (start, end) =>
+  //     breakpoint[start] <= w && breakpoint[end] > w;
 
-    if (isBetween('xs', 'md')) {
-      setSections(1);
-      setWidth('100%');
-    } else if (isBetween('md', 'lg')) {
-      setSections(2);
-      setWidth('50%');
-    } else if (isBetween('lg', 'xl')) {
-      setSections(4);
-      setWidth('25%');
-    } else if (breakpoint['xl'] < w) {
-      setSections(5);
-      setWidth('20%');
-    }
-  };
+  //   if (isBetween('xs', 'md')) {
+  //     setSections(1);
+  //     setWidth('100%');
+  //   } else if (isBetween('md', 'lg')) {
+  //     setSections(2);
+  //     setWidth('50%');
+  //   } else if (isBetween('lg', 'xl')) {
+  //     setSections(4);
+  //     setWidth('25%');
+  //   } else if (breakpoint['xl'] < w) {
+  //     setSections(5);
+  //     setWidth('20%');
+  //   }
+  // };
 
-  const grid = splitArray(imagesData, sections);
-  const loaderGrid = splitArray(Array.from(Array(15).keys()), sections);
+  let loaderGrid;
+  let width;
+  let grid;
+  if (XSorMD) {
+    width = '100%';
+    grid = splitArray(imagesData, 1);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 1);
+  } else if (MDorLG) {
+    width = '50%';
+    grid = splitArray(imagesData, 2);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 2);
+  } else if (LGorXL) {
+    width = '25%';
+    grid = splitArray(imagesData, 3);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 4);
+  } else if (moreThanXL) {
+    width = '20%';
+    grid = splitArray(imagesData, 4);
+    loaderGrid = splitArray(Array.from(Array(15).keys()), 5);
+  }
+
+  useEffect(() => {
+    if (
+      inView &&
+      (prompt !== '' || prompt || prompt !== null) &&
+      !firstRender.current &&
+      !delay.current
+    ) {
+      setPageNo((prev) => (prev += 1));
+      delay.current = true;
+    } else firstRender.current = false;
+    setTimeout(() => (delay.current = false), 300);
+  }, [inView]);
+
+  console.log(grid);
   return (
     <>
       <SearchBar
@@ -76,35 +106,57 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
         onChange={({ target }) => setQuery(target.value)}
         onClick={(e) => {
           if (e) e.preventDefault();
+          firstRender.current = true;
+          setPageNo(1);
           setSearchParams({ prompt: query }, { replace: true });
         }}
       />
 
-      {grid && grid[0].length > 0 ? (
-        <Stack direction='row'>
-          {grid?.slice(0, sections).map((col, index) => (
-            <Grid container key={index} direction='column' sx={{ width }}>
-              {col.map((data, i) => (
-                <ImageComponent
-                  forwardedRef={
-                    index === 0
-                      ? col.length === i + 1
-                        ? setLastElement
+      {grid && grid[0]?.length > 0 ? (
+        <Grid container direction='row' maxWidth='100%'>
+          {grid?.map((col, index) => (
+            <Grid key={index} item xs={12} md={6} lg={4} xl={3}>
+              <Grid
+                container
+                direction='column'
+                width='100%'
+                // sx={{ width }}
+              >
+                {col.map((data, i) => (
+                  <ImageComponent
+                    forwardedRef={
+                      XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref mobile')
+                          ref
+                        : !XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref pc')
+
+                          ref
                         : null
-                      : null
-                  }
-                  key={i}
-                  image={data.fields.image_url}
-                  description={
-                    data.fields?.generation_prompt !== 'None' &&
-                    data.fields?.generation_prompt
-                  }
-                  square
-                />
-              ))}
+                    }
+                    test={
+                      XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref mobile')
+                          true
+                        : !XSorMD && index === 0 && i === col.length - 1
+                        ? // ? console.log('give ref pc')
+
+                          true
+                        : false
+                    }
+                    key={i}
+                    image={data.fields.image_url}
+                    description={
+                      data.fields?.generation_prompt !== 'None' &&
+                      data.fields?.generation_prompt
+                    }
+                    square
+                  />
+                ))}
+              </Grid>
             </Grid>
           ))}
-        </Stack>
+        </Grid>
       ) : (
         !isLoading &&
         prompt && (
@@ -114,7 +166,7 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
         )
       )}
 
-      {isLoading && (
+      {isLoading && prompt && (
         <Stack direction='row'>
           {loaderGrid?.map((col, index) => (
             <Grid container key={index} direction='column' sx={{ width }}>
@@ -125,6 +177,13 @@ const SearchTab = ({ imagesData, isLoading, setPageNo }) => {
           ))}
         </Stack>
       )}
+      {/* <Box
+        sx={{
+          bgcolor: 'transparent',
+          width: 10,
+          height: 10,
+        }}
+      /> */}
       <ScrollToTopButton />
     </>
   );

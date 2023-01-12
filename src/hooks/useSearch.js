@@ -10,6 +10,10 @@ export default function useSearch(pageNo, setPageNo) {
   const prevPrompt = useRef();
 
   useEffect(() => {
+    setIsLoading(true);
+  }, [pageNo]);
+
+  useEffect(() => {
     const prompt = searchParams.get('prompt');
     if (prompt) {
       if (prompt !== prevPrompt.current) {

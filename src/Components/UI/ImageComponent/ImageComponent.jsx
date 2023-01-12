@@ -28,6 +28,7 @@ const ImageComponent = ({
   forwardedRef,
   isLoading,
   square,
+  test,
 }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [showZoomed, setShowZoomed] = useState(false);
